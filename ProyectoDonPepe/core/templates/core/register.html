@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link type="text/css" rel="stylesheet" href="core/static/css/register.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-4">Registro</h1>
+        <form id="registrationForm">
+            <div class="mb-3">
+                <label for="rut" class="form-label">RUT:</label>
+                <input type="text" class="form-control is-invalid" id="rut" name="rut" required>
+                <div id="rutFeedback" class="invalid-feedback"></div>
+            </div>
+            
+            <div class="mb-3">
+                <label for="nombre" class="form-label">Nombre:</label>
+                <input type="text" class="form-control is-invalid" id="nombre" name="nombre" required>
+                <div id="nombreFeedback" class="invalid-feedback"></div>
+            </div>
+
+            <div class="mb-3">
+                <label for="apellido" class="form-label">Apellido:</label>
+                <input type="text" class="form-control is-invalid" id="apellido" name="apellido" required>
+                <div id="apellidoFeedback" class="invalid-feedback"></div>
+            </div>
+            
+            <div class="mb-3">
+                <label for="fechaNacimiento" class="form-label">Fecha de Nacimiento:</label>
+                <input type="date" class="form-control is-invalid" id="fechaNacimiento" name="fechaNacimiento" required>
+                <div id="fechaNacimientoFeedback" class="invalid-feedback"></div>
+            </div>
+            
+            <div class="mb-3">
+                <label for="telefono" class="form-label">Teléfono:</label>
+                <input type="number" class="form-control is-invalid" id="telefono" name="telefono">
+                <div id="telefonoFeedback" class="invalid-feedback"></div>
+            </div>
+            
+            <div class="mb-3">
+                <label for="email" class="form-label">Correo electrónico:</label>
+                <input type="email" class="form-control is-invalid" id="email" name="email" required>
+                <div id="emailFeedback" class="invalid-feedback"></div>
+            </div>
+            
+            <div class="mb-3">
+                <label for="password" class="form-label">Contraseña:</label>
+                <input type="password" class="form-control is-invalid" id="password" name="password" required>
+                <div id="passwordFeedback" class="invalid-feedback"></div>
+            </div>
+            
+            <div class="mb-3">
+                <label for="confirmPassword" class="form-label">Confirmar Contraseña:</label>
+                <input type="password" class="form-control is-invalid" id="confirmPassword" name="confirmPassword" required>
+                <div id="confirmPasswordFeedback" class="invalid-feedback"></div>
+            </div>
+            <button type="submit" class="btn btn-primary">Registrarse</button>
+        </form>
+    </div>
+
+    <!-- Bootstrap JS and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        document.getElementById('registrationForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            validarForm();
+        });
+        // Event listener para validar RUT cuando se sale del campo
+        document.getElementById('rut').addEventListener('blur', function() {
+            validarRut();
+        });
+
+        // Event listener para validar nombre cuando se sale del campo
+        document.getElementById('nombre').addEventListener('blur', function() {
+            validarNombre();
+        });
+
+        // Event listener para validar apellido cuando se sale del campo
+        document.getElementById('apellido').addEventListener('blur', function() {
+            validarApellido();
+        });
+
+        // Event listener para validar fecha de nacimiento cuando se sale del campo
+        document.getElementById('fechaNacimiento').addEventListener('blur', function() {
+            validarFechaNacimiento();
+        });
+        
+        // Event listener para validar telefono cuando se sale del campo
+        document.getElementById('telefono').addEventListener('blur', function() {
+            validarTelefono();
+        });
+
+        // Event listener para validar contraseña cuando se sale del campo
+        document.getElementById('password').addEventListener('blur', function() {
+            validarContraseña();
+        });
+        
+
+        // Muestra mensaje ERROR
+        function msjError(inputId, errorMessage) {
+            var feedbackElement = document.getElementById(inputId + 'Feedback');
+            var inputElement = document.getElementById(inputId);
+
+            // Limpiar mensajes de error previos
+            limpiarError(inputId);
+
+            errorMessage.split('\n').forEach(function(errorMsg) {
+                var errorElement = document.createElement('div');
+                errorElement.className = 'invalid-feedback';
+                errorElement.textContent = errorMsg;
+                inputElement.parentNode.insertBefore(errorElement, inputElement.nextSibling);
+            });
+
+            // Marcar el input como inválido
+            inputElement.classList.add('is-invalid');
+        }
+
+        // Muestra mensaje CORRECTO
+        function msjCorrecto(inputId) {
+            var inputElement = document.getElementById(inputId);
+            inputElement.classList.remove('is-invalid');
+            inputElement.classList.add('is-valid');
+        }
+
+        // Limpia mensajes de ERROR
+        function limpiarError(inputId) {
+            var inputElement = document.getElementById(inputId);
+            var errorMessages = inputElement.parentNode.querySelectorAll('.invalid-feedback');
+            errorMessages.forEach(function(errorElement) {
+                errorElement.parentNode.removeChild(errorElement);
+            });
+
+            // Marcar el input como válido
+            inputElement.classList.remove('is-invalid');
+        }
+
+        // Validar RUT Chileno
+        function validarRut() {
+            var rut = document.getElementById('rut').value;
+            if (!/^[0-9]+-[0-9kK]{1}$/.test(rut)) {
+                msjError('rut', 'Ingrese un RUT válido');
+            } else {
+                limpiarError('rut');
+                msjCorrecto('rut');
+            }
+        }
+
+        // Validar Nombre y Apellido
+        function validarNombre() {
+            var nombre = document.getElementById('nombre').value;
+            if (!nombre.trim()) {
+                msjError('nombre', 'Por favor, ingrese su nombre');
+            } else {
+                limpiarError('nombre');
+                msjCorrecto('nombre');
+            }
+        }
+        function validarApellido() {
+            var apellido = document.getElementById('apellido').value;
+            if (!apellido.trim()) {
+                msjError('apellido', 'Por favor, ingrese su apellido');
+            } else {
+                limpiarError('apellido');
+                msjCorrecto('apellido');
+            }
+        }
+
+        // Validar Fecha de Nacimiento
+        function validarFechaNacimiento() {
+            var fechaNacimiento = new Date(document.getElementById('fechaNacimiento').value);
+            var now = new Date();
+            var minDate = new Date(now.getFullYear() - 18, now.getMonth(), now.getDate());
+            if (fechaNacimiento > minDate) {
+                msjError('fechaNacimiento', 'Debe ser mayor de 18 años');
+            } else {
+                limpiarError('fechaNacimiento');
+                msjCorrecto('fechaNacimiento');
+            }
+        }
+
+        //Validar Telefono
+        function validarTelefono() {
+            var telefono = document.getElementById('telefono').value;
+
+            if (telefono.length > 9) {
+                msjError('telefono','El teléfono no puede tener más de 9 dígitos');
+            } else {
+                limpiarError('telefono');
+                msjCorrecto('telefono');
+            }
+
+            if (telefono.length < 9) {
+                msjError('telefono','El teléfono no puede tener más de 9 dígitos');
+            } else {
+                limpiarError('telefono');
+                msjCorrecto('telefono');
+            }
+        }
+
+        //Validar Contraseña
+        function validarContraseña() {
+            var contraseña = document.getElementById('password').value;
+            var errores = [];
+
+            // Al menos 1 letra mayúscula
+            if (!/[A-Z]/.test(contraseña)) {
+                errores.push('- La contraseña debe contener al menos 1 letra mayúscula');
+            }
+
+            // Al menos 1 caracter especial (incluyendo ".")
+            if (!/[.!?@#$%^&*()-_+=]/.test(contraseña)) {
+                errores.push('- La contraseña debe contener al menos 1 caracter especial');
+            }
+
+            // Al menos 1 número
+            if (!/[0-9]/.test(contraseña)) {
+                errores.push('- La contraseña debe contener al menos 1 número');
+            }
+
+            // Longitud mínima de 8 caracteres
+            if (contraseña.length < 8) {
+                errores.push('- La contraseña debe contener al menos 8 caracteres');
+            }
+
+            // Mostrar todos los errores encontrados
+            if (errores.length > 0) {
+                msjError('password', errores.join('\n')); // Cambio aquí
+            } else {
+                limpiarError('password');
+                msjCorrecto('password');
+            }
+        }
+
+
+
+        // Función para validar todo el formulario
+        function validarForm() {
+            validarRut();
+            validarNombre();
+            validarApellido()
+            validarFechaNacimiento();
+            validarTelefono();
+            validarContraseña();
+        }
+    </script>
+</body>
+</html>
