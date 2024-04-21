@@ -10,58 +10,72 @@
 </head>
 <body>
     <div class="container">
-        <h1 class="mt-4">Registro</h1>
-        <form id="registrationForm">
-            <div class="mb-3">
-                <label for="rut" class="form-label">RUT:</label>
-                <input type="text" class="form-control is-invalid" id="rut" name="rut" required>
-                <div id="rutFeedback" class="invalid-feedback"></div>
+        <div style="text-align: center;">
+            <h1 class="mt-4">Registro de usuario</h1>
+        </div>
+        <br>
+        <br>
+        <form id="registrationForm" class="row">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="rut" class="form-label">RUT:</label>
+                    <input type="text" class="form-control is-invalid" id="rut" name="rut" placeholder="12345678-9" required style="border-radius: 0; border: 2px solid rgba(128, 128, 128, 0.500);">
+                    <div id="rutFeedback" class="invalid-feedback"></div>
+                </div>
+    
+                <div class="mb-3">
+                    <label for="nombre" class="form-label">Nombre:</label>
+                    <input type="text" class="form-control is-invalid" id="nombre" name="nombre" placeholder="Ingresa tu nombre" required style="border-radius: 0; border: 2px solid rgba(128, 128, 128, 0.500);">
+                    <div id="nombreFeedback" class="invalid-feedback"></div>
+                </div>
+    
+                <div class="mb-3">
+                    <label for="apellido" class="form-label">Apellido:</label>
+                    <input type="text" class="form-control is-invalid" id="apellido" name="apellido" placeholder="Ingresa tu apellido" required style="border-radius: 0; border: 2px solid rgba(128, 128, 128, 0.500);">
+                    <div id="apellidoFeedback" class="invalid-feedback"></div>
+                </div>
+    
+                <div class="mb-3">
+                    <label for="password" class="form-label">Contraseña:</label>
+                    <input type="password" class="form-control is-invalid" id="password" name="password" placeholder="Ingresa tu contraseña" required style="border-radius: 0; border: 2px solid rgba(128, 128, 128, 0.500);">
+                    <div id="passwordFeedback" class="invalid-feedback"></div>
+                </div>
             </div>
-            
-            <div class="mb-3">
-                <label for="nombre" class="form-label">Nombre:</label>
-                <input type="text" class="form-control is-invalid" id="nombre" name="nombre" required>
-                <div id="nombreFeedback" class="invalid-feedback"></div>
+    
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="fechaNacimiento" class="form-label">Fecha de Nacimiento:</label>
+                    <input type="date" class="form-control is-invalid" id="fechaNacimiento" name="fechaNacimiento" placeholder="Ingresa tu fecha de nacimiento" required style="border-radius: 0; border: 2px solid rgba(128, 128, 128, 0.500); text-transform: uppercase;">
+                    <div id="fechaNacimientoFeedback" class="invalid-feedback"></div>
+                </div>
+    
+                <div class="mb-3">
+                    <label for="telefono" class="form-label">Teléfono:</label>
+                    <input type="number" class="form-control is-invalid" id="telefono" name="telefono" placeholder="Ingresa tu telefono" required style="border-radius: 0; border: 2px solid rgba(128, 128, 128, 0.500);">
+                    <div id="telefonoFeedback" class="invalid-feedback"></div>
+                </div>
+    
+                <div class="mb-3">
+                    <label for="email" class="form-label">Correo electrónico:</label>
+                    <input type="email" class="form-control is-invalid" id="email" name="email" placeholder="Ingresa tu correo electronico" required style="border-radius: 0; border: 2px solid rgba(128, 128, 128, 0.500);">
+                    <div id="emailFeedback" class="invalid-feedback"></div>
+                </div>
+    
+                <div class="mb-3">
+                    <label for="confirmPassword" class="form-label">Confirmar Contraseña:</label>
+                    <input type="password" class="form-control is-invalid" id="confirmPassword" name="confirmPassword" placeholder="Confirma tu contraseña" required style="border-radius: 0; border: 2px solid rgba(128, 128, 128, 0.500);">
+                    <div id="confirmPasswordFeedback" class="invalid-feedback"></div>
+                </div>
             </div>
-
-            <div class="mb-3">
-                <label for="apellido" class="form-label">Apellido:</label>
-                <input type="text" class="form-control is-invalid" id="apellido" name="apellido" required>
-                <div id="apellidoFeedback" class="invalid-feedback"></div>
-            </div>
-            
-            <div class="mb-3">
-                <label for="fechaNacimiento" class="form-label">Fecha de Nacimiento:</label>
-                <input type="date" class="form-control is-invalid" id="fechaNacimiento" name="fechaNacimiento" required>
-                <div id="fechaNacimientoFeedback" class="invalid-feedback"></div>
-            </div>
-            
-            <div class="mb-3">
-                <label for="telefono" class="form-label">Teléfono:</label>
-                <input type="number" class="form-control is-invalid" id="telefono" name="telefono">
-                <div id="telefonoFeedback" class="invalid-feedback"></div>
-            </div>
-            
-            <div class="mb-3">
-                <label for="email" class="form-label">Correo electrónico:</label>
-                <input type="email" class="form-control is-invalid" id="email" name="email" required>
-                <div id="emailFeedback" class="invalid-feedback"></div>
-            </div>
-            
-            <div class="mb-3">
-                <label for="password" class="form-label">Contraseña:</label>
-                <input type="password" class="form-control is-invalid" id="password" name="password" required>
-                <div id="passwordFeedback" class="invalid-feedback"></div>
-            </div>
-            
-            <div class="mb-3">
-                <label for="confirmPassword" class="form-label">Confirmar Contraseña:</label>
-                <input type="password" class="form-control is-invalid" id="confirmPassword" name="confirmPassword" required>
-                <div id="confirmPasswordFeedback" class="invalid-feedback"></div>
-            </div>
-            <button type="submit" class="btn btn-primary">Registrarse</button>
+                <div style="text-align: center;">
+                    <button type="submit" class="btn btn-primary" style="width: 50%;">Registrarse</button>
+                </div>
         </form>
     </div>
+    
+    
+    
+    
 
     <!-- Bootstrap JS and jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -96,10 +110,20 @@
         document.getElementById('telefono').addEventListener('blur', function() {
             validarTelefono();
         });
+        
+        // Event listener para validar correo cuando se sale del campo
+        document.getElementById('email').addEventListener('blur', function() {
+            validarCorreo();
+        });
 
         // Event listener para validar contraseña cuando se sale del campo
         document.getElementById('password').addEventListener('blur', function() {
             validarContraseña();
+        });
+
+        // Event listener para validar confirmar contraseña cuando se sale del campo
+        document.getElementById('confirmPassword').addEventListener('blur', function() {
+            validarConfirmarContraseña();
         });
         
 
@@ -142,15 +166,38 @@
         }
 
         // Validar RUT Chileno
+        var Fn = {
+            // Valida el rut con su cadena completa "XXXXXXXX-X"
+            validaRut : function (rutCompleto) {
+                if (!/^[0-9]+[-|‐]{1}[0-9kK]{1}$/.test( rutCompleto ))
+                    return false;
+                var tmp 	= rutCompleto.split('-');
+                var digv	= tmp[1]; 
+                var rut 	= tmp[0];
+                if ( digv == 'K' ) digv = 'k' ;
+                return (Fn.dv(rut) == digv );
+            },
+            dv : function(T){
+                var M=0,S=1;
+                for(;T;T=Math.floor(T/10))
+                    S=(S+T%10*(9-M++%6))%11;
+                return S?S-1:'k';
+            }
+        }
+        //Validar Rut Chileno
         function validarRut() {
             var rut = document.getElementById('rut').value;
-            if (!/^[0-9]+-[0-9kK]{1}$/.test(rut)) {
-                msjError('rut', 'Ingrese un RUT válido');
+            if (!rut.trim()) {
+                msjError('rut', 'Por favor, ingrese su RUT');
+            } else if (!Fn.validaRut(rut)) {
+                msjError('rut', 'El RUT ingresado no es válido');
             } else {
                 limpiarError('rut');
                 msjCorrecto('rut');
             }
         }
+
+
 
         // Validar Nombre y Apellido
         function validarNombre() {
@@ -174,16 +221,24 @@
 
         // Validar Fecha de Nacimiento
         function validarFechaNacimiento() {
-            var fechaNacimiento = new Date(document.getElementById('fechaNacimiento').value);
-            var now = new Date();
-            var minDate = new Date(now.getFullYear() - 18, now.getMonth(), now.getDate());
-            if (fechaNacimiento > minDate) {
-                msjError('fechaNacimiento', 'Debe ser mayor de 18 años');
+            var fechaNacimiento = document.getElementById('fechaNacimiento').value;
+
+            if (!fechaNacimiento.trim()) {
+                msjError('fechaNacimiento', 'No puedes dejar este campo vacío');
             } else {
-                limpiarError('fechaNacimiento');
-                msjCorrecto('fechaNacimiento');
+                fechaNacimiento = new Date(fechaNacimiento);
+                var now = new Date();
+                var minDate = new Date(now.getFullYear() - 18, now.getMonth(), now.getDate());
+                
+                if (fechaNacimiento > minDate) {
+                    msjError('fechaNacimiento', 'Debe ser mayor de 18 años');
+                } else {
+                    limpiarError('fechaNacimiento');
+                    msjCorrecto('fechaNacimiento');
+                }
             }
         }
+
 
         //Validar Telefono
         function validarTelefono() {
@@ -197,10 +252,25 @@
             }
 
             if (telefono.length < 9) {
-                msjError('telefono','El teléfono no puede tener más de 9 dígitos');
+                msjError('telefono','El teléfono no puede tener menos de 9 dígitos');
             } else {
                 limpiarError('telefono');
                 msjCorrecto('telefono');
+            }
+        }
+
+        //Validar Correo
+        function validarCorreo() {
+            var correo = document.getElementById('email').value;
+            var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            if (!correo.trim()) {
+                msjError('email', 'Por favor, ingrese su correo electrónico');
+            } else if (!emailRegex.test(correo)) {
+                msjError('email', 'El correo electrónico ingresado no es válido');
+            } else {
+                limpiarError('email');
+                msjCorrecto('email');
             }
         }
 
@@ -238,6 +308,27 @@
             }
         }
 
+        function validarConfirmarContraseña() {
+            var confContraseña = document.getElementById('confirmPassword').value;
+            var contraseña = document.getElementById('password').value;
+            
+
+            if (confContraseña != contraseña) {
+                msjError('confirmPassword','La contraseña no coincide');
+            } else {
+                limpiarError('confirmPassword');
+                msjCorrecto('confirmPassword');
+            }
+
+            if (!confContraseña.trim()) {
+                msjError('confirmPassword', 'No puedes dejar vacío');
+            } else {
+                limpiarError('nombre');
+                msjCorrecto('nombre');
+            }
+            
+        }
+
 
 
         // Función para validar todo el formulario
@@ -247,7 +338,9 @@
             validarApellido()
             validarFechaNacimiento();
             validarTelefono();
+            validarCorreo();
             validarContraseña();
+            validarConfirmarContraseña();
         }
     </script>
 </body>
