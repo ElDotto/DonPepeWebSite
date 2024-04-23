@@ -1,0 +1,204 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Productos - Accesorios Don Pepe</title>
+    <!-- Enlace a Bootstrap 4 CSS -->
+    <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+    <!-- Agregar librería de Font Awesome para los iconos -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <!-- Estilos personalizados aquí -->
+    <style>
+        /* Estilos personalizados aquí */
+        .logo {
+            position: absolute;
+            top: 10px; /* Ajusta según sea necesario */
+            left: 10px; /* Ajusta según sea necesario */
+            z-index: 1000; /* Asegura que el logo esté en la parte superior */
+        }
+
+        .seccion-azul {
+            background-color: #007bff; /* Azul */
+            color: #fff; /* Texto blanco */
+            padding: 20px;
+        }
+
+        .categorias {
+            padding: 20px;
+        }
+
+        .categoria {
+            margin-bottom: 20px;
+        }
+
+        .categoria h2 {
+            cursor: pointer;
+        }
+
+        .producto img {
+            max-width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sección de botones de navegación -->
+    <div class="text-center" style="margin-top: 100px;"> <!-- Ajuste de margen superior para dejar espacio para el logo -->
+        <!-- Logo clickeable que redirige a la página de inicio -->
+        <a href="{% url 'inicio' %}">
+            <img src="{% static 'img/logo-don-pepe.png' %}" class="logo" alt="Accesorios Don Pepe">
+        </a>
+        <ul class="list-inline">
+            <li class="list-inline-item">
+                <a class="btn btn-primary btn-sm" href="{% url 'register' %}">Registrarse</a>
+            </li>
+            <li class="list-inline-item">
+                <a class="btn btn-primary btn-sm" href="{% url 'productos' %}">Productos</a>
+            </li>
+            <li class="list-inline-item">
+                <a class="btn btn-primary btn-sm" href="{% url 'quienessomos' %}">Quienes Somos</a>
+            </li>
+            <li class="list-inline-item">
+                <a class="btn btn-primary btn-sm" href="{% url 'galeria' %}">Galería</a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Sección de categorías -->
+    <div class="categorias">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="categoria">
+                    <h2 data-toggle="collapse" data-target="#motor-de-partida">Motor de partida</h2>
+                    <div id="motor-de-partida" class="collapse">
+                        <!-- Contenido de la categoría Motor de partida -->
+                        <div class="row">
+                            <div class="col-md-3 producto">
+                                <img src="{% static 'img/producto1.jpg' %}" alt="Producto 1">
+                                <p>Descripción del producto 1</p>
+                            </div>
+                            <div class="col-md-3 producto">
+                                <img src="{% static 'img/producto2.jpg' %}" alt="Producto 2">
+                                <p>Descripción del producto 2</p>
+                            </div>
+                            <!-- Agrega más productos -->
+                        </div>
+                    </div>
+                </div>
+                <!-- Repite el mismo patrón para otras categorías -->
+                <div class="categoria">
+                    <h2 data-toggle="collapse" data-target="#resistencia-de-calefaccion">Resistencia de Calefacción</h2>
+                    <div id="resistencia-de-calefaccion" class="collapse">
+                        <!-- Contenido de la categoría Resistencia de Calefacción -->
+                        <div class="row">
+                            <!-- Agrega productos para Resistencia de Calefacción -->
+                        </div>
+                    </div>
+                </div>
+                <!-- Repite el mismo patrón para otras categorías -->
+                <div class="categoria">
+                    <h2 data-toggle="collapse" data-target="#bobinas">Bobinas</h2>
+                    <div id="bobinas" class="collapse">
+                        <!-- Contenido de la categoría Bobinas -->
+                        <div class="row">
+                            <!-- Agrega productos para Bobinas -->
+                        </div>
+                    </div>
+                </div>
+                <!-- Repite el mismo patrón para otras categorías -->
+                <div class="categoria">
+                    <h2 data-toggle="collapse" data-target="#terminales-electricos">Terminales eléctricos</h2>
+                    <div id="terminales-electricos" class="collapse">
+                        <!-- Contenido de la categoría Terminales eléctricos -->
+                        <div class="row">
+                            <!-- Agrega productos para Terminales eléctricos -->
+                        </div>
+                    </div>
+                </div>
+                <!-- Repite el mismo patrón para otras categorías -->
+                <div class="categoria">
+                    <h2 data-toggle="collapse" data-target="#alternadores">Alternadores</h2>
+                    <div id="alternadores" class="collapse">
+                        <!-- Contenido de la categoría Alternadores -->
+                        <div class="row">
+                            <!-- Agrega productos para Alternadores -->
+                        </div>
+                    </div>
+                </div>
+                <!-- Repite el mismo patrón para otras categorías -->
+                <div class="categoria">
+                    <h2 data-toggle="collapse" data-target="#corta-corrientes">Corta corrientes</h2>
+                    <div id="corta-corrientes" class="collapse">
+                        <!-- Contenido de la categoría Corta corrientes -->
+                        <div class="row">
+                            <!-- Agrega productos para Corta corrientes -->
+                        </div>
+                    </div>
+                </div>
+                <!-- Repite el mismo patrón para otras categorías -->
+                <div class="categoria">
+                    <h2 data-toggle="collapse" data-target="#cables">Cables</h2>
+                    <div id="cables" class="collapse">
+                        <!-- Contenido de la categoría Cables -->
+                        <div class="row">
+                            <!-- Agrega productos para Cables -->
+                        </div>
+                    </div>
+                </div>
+                <!-- Repite el mismo patrón para otras categorías -->
+                <div class="categoria">
+                    <h2 data-toggle="collapse" data-target="#materiales-electricos">Materiales Eléctricos</h2>
+                    <div id="materiales-electricos" class="collapse">
+                        <!-- Contenido de la categoría Materiales Eléctricos -->
+                        <div class="row">
+                            <!-- Agrega productos para Materiales Eléctricos -->
+                        </div>
+                    </div>
+                </div>
+                <!-- Repite el mismo patrón para otras categorías -->
+                <div class="categoria">
+                    <h2 data-toggle="collapse" data-target="#fusibles">Fusibles</h2>
+                    <div id="fusibles" class="collapse">
+                        <!-- Contenido de la categoría Fusibles -->
+                        <div class="row">
+                            <!-- Agrega productos para Fusibles -->
+                        </div>
+                    </div>
+                </div>
+                <!-- Repite el mismo patrón para otras categorías -->
+            </div>
+        </div>
+        <!-- Repite el mismo patrón para otras filas de categorías -->
+    </div>
+
+    <!-- Sección de información de ubicación y contacto -->
+    <div class="container-fluid seccion-azul mt-5 py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h2>Ubicación</h2>
+                    <i class="fas fa-map-marker-alt fa-2x"></i>
+                    <!-- Aquí puedes incrustar el mapa interactivo -->
+                    <p>Zenteno 524, Temuco</p>
+                </div>
+                <div class="col-md-6">
+                    <h2>Contacto</h2>
+                    <i class="fas fa-phone-alt fa-2x"></i>
+                    <p>+56 45 221 3719</p>
+                    <p>+56 9 5297 0113</p>
+                    <i class="fas fa-envelope fa-2x"></i>
+                    <p>contacto@alternadoresdonpepe.cl</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts de Bootstrap y Font Awesome -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,83 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quienes Somos - Accesorios Don Pepe</title>
+    <!-- Enlace a Bootstrap 4 CSS -->
+    <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+    <!-- Agregar librería de Font Awesome para los iconos -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Estilos personalizados aquí */
+        .card {
+            padding: 20px;
+            margin: auto;
+            margin-top: 50px; /* Ajusta según sea necesario */
+            width: 50%; /* Ajusta según sea necesario */
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sección de botones de navegación -->
+    <div class="text-center">
+        <!-- Logo clickeable que redirige a la página de inicio -->
+        <a href="{% url 'inicio' %}">
+            <img src="{% static 'img/logo-don-pepe.png' %}" class="logo" alt="Accesorios Don Pepe">
+        </a>
+        <ul class="list-inline">
+            <li class="list-inline-item">
+                <a class="btn btn-primary btn-sm" href="{% url 'register' %}">Registrarse</a>
+            </li>
+            <li class="list-inline-item">
+                <a class="btn btn-primary btn-sm" href="{% url 'productos' %}">Productos</a>
+            </li>
+            <li class="list-inline-item">
+                <a class="btn btn-primary btn-sm" href="{% url 'quienessomos' %}">Quienes Somos</a>
+            </li>
+            <li class="list-inline-item">
+                <a class="btn btn-primary btn-sm" href="{% url 'galeria' %}">Galería</a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Recuadro con el texto de Quienes Somos -->
+    <div class="card">
+        <p>Somos una empresa dedicada a la venta de alternadores y motores de partida y todos sus despieces.</p>
+        <p>Trabajamos con repuestos originales y alternativos, para automóviles, buses, camiones, maquinaria agrícola.</p>
+        <p>Nos caracterizamos por nuestra seriedad, atención personalizada y especializada, además de excelente calidad en nuestros productos.</p>
+        <p>Despachamos en toda la Región de la Araucanía y en el resto de Chile.</p>
+    </div>
+
+    <!-- Sección de información de ubicación y contacto -->
+    <div class="container-fluid seccion-azul mt-5 py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h2>Ubicación</h2>
+                    <i class="fas fa-map-marker-alt fa-2x"></i>
+                    <!-- Aquí puedes incrustar el mapa interactivo -->
+                    <p>Zenteno 524, Temuco</p>
+                </div>
+                <div class="col-md-6">
+                    <h2>Contacto</h2>
+                    <i class="fas fa-phone-alt fa-2x"></i>
+                    <p>+56 45 221 3719</p>
+                    <p>+56 9 5297 0113</p>
+                    <i class="fas fa-envelope fa-2x"></i>
+                    <p>contacto@alternadoresdonpepe.cl</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts de Bootstrap y Font Awesome -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
+</body>
+</html>
