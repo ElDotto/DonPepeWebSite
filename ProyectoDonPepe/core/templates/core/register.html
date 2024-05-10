@@ -88,8 +88,12 @@
                             {% csrf_token %}
                             <div class="mb-3">
                                 <label for="rut" class="form-label">RUT:</label>
-                                <input type="text" class="form-control" id="rut" name="rut" placeholder="12345678-9" required>
-                                <div id="rutFeedback" class="invalid-feedback"></div>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="rutNumero" name="rutNumero" placeholder="12345678" required>
+                                    <span class="input-group-text">-</span>
+                                    <input type="text" class="form-control" id="rutVerificador" name="rutVerificador" placeholder="9" maxlength="1" required>
+                                </div>
+                                <div id="rutFeedback"></div>
                             </div>
 
                             <div class="mb-3">
@@ -104,11 +108,6 @@
                                 <div id="apellidoFeedback" class="invalid-feedback"></div>
                             </div>
 
-                            <div class="mb-3">
-                                <label for="fechaNacimiento" class="form-label">Fecha de Nacimiento:</label>
-                                <input type="date" class="form-control" id="fechaNacimiento" name="fechaNacimiento" placeholder="Ingresa tu fecha de nacimiento" required>
-                                <div id="fechaNacimientoFeedback" class="invalid-feedback"></div>
-                            </div>
 
                             <div class="mb-3">
                                 <label for="telefono" class="form-label">Teléfono:</label>
@@ -135,7 +134,8 @@
                             </div>
 
                             <div class="d-grid gap-2">
-                                <button type="submit" class="btn btn-primary">Registrarse</button>
+                                <button type="submit" class="btn btn-primary" onclick="enviarFormulario()">Registrarse</button>
+
                             </div>
                         </form>
                     </div>
@@ -179,7 +179,11 @@
             validarForm();
         });
         // Event listener para validar RUT cuando se sale del campo
-        document.getElementById('rut').addEventListener('blur', function() {
+        document.getElementById('rutNumero').addEventListener('blur', function() {
+            validarRut();
+        });
+
+        document.getElementById('rutVerificador').addEventListener('blur', function() {
             validarRut();
         });
 
@@ -193,10 +197,6 @@
             validarApellido();
         });
 
-        // Event listener para validar fecha de nacimiento cuando se sale del campo
-        document.getElementById('fechaNacimiento').addEventListener('blur', function() {
-            validarFechaNacimiento();
-        });
         
         // Event listener para validar telefono cuando se sale del campo
         document.getElementById('telefono').addEventListener('blur', function() {
@@ -260,28 +260,35 @@
         // Validar RUT Chileno
         var Fn = {
             // Valida el rut con su cadena completa "XXXXXXXX-X"
-            validaRut : function (rutCompleto) {
-                if (!/^[0-9]+[-|‐]{1}[0-9kK]{1}$/.test( rutCompleto ))
+            validaRut: function (rutCompleto) {
+                if (!/^[0-9]+[-|‐]{1}[0-9kK]{1}$/.test(rutCompleto))
                     return false;
-                var tmp 	= rutCompleto.split('-');
-                var digv	= tmp[1]; 
-                var rut 	= tmp[0];
-                if ( digv == 'K' ) digv = 'k' ;
-                return (Fn.dv(rut) == digv );
+                var tmp = rutCompleto.split('-');
+                var digv = tmp[1];
+                var rut = tmp[0];
+                if (digv == 'K') digv = 'k';
+                return (Fn.dv(rut) == digv);
             },
-            dv : function(T){
-                var M=0,S=1;
-                for(;T;T=Math.floor(T/10))
-                    S=(S+T%10*(9-M++%6))%11;
-                return S?S-1:'k';
+            dv: function (T) {
+                var M = 0, S = 1;
+                for (; T; T = Math.floor(T / 10))
+                    S = (S + T % 10 * (9 - M++ % 6)) % 11;
+                return S ? S - 1 : 'k';
             }
         }
-        //Validar Rut Chileno
+        // Validar RUT Chileno
         function validarRut() {
-            var rut = document.getElementById('rut').value;
-            if (!rut.trim()) {
-                msjError('rut', 'Por favor, ingrese su RUT');
-            } else if (!Fn.validaRut(rut)) {
+            var rutNumero = document.getElementById('rutNumero').value;
+            var rutVerificador = document.getElementById('rutVerificador').value;
+            var rutCompleto = rutNumero + '-' + rutVerificador;
+
+            if (!rutNumero.trim() || !rutVerificador.trim()) {
+                msjError('rut', 'Por favor, ingrese su RUT completo');
+            } else if (!/^\d+$/.test(rutNumero)) {
+                msjError('rut', 'El RUT solo puede contener números');
+            } else if (rutVerificador.length === 0) {
+                msjError('rut', 'Por favor, ingrese el dígito verificador');
+            } else if (!Fn.validaRut(rutCompleto)) {
                 msjError('rut', 'El RUT ingresado no es válido');
             } else {
                 limpiarError('rut');
@@ -291,80 +298,88 @@
 
 
 
+
+
         // Validar Nombre y Apellido
         function validarNombre() {
             var nombre = document.getElementById('nombre').value;
+            var nombreRegex = /^[A-Za-záéíóúÁÉÍÓÚüÜñÑ]{1,16}$/;
+
             if (!nombre.trim()) {
                 msjError('nombre', 'Por favor, ingrese su nombre');
+                return false;
+            } else if (!nombreRegex.test(nombre)) {
+                msjError('nombre', 'El nombre no puede contener números, espacios ni caracteres especiales y debe tener entre 1 y 16 letras');
+                return false;
             } else {
                 limpiarError('nombre');
                 msjCorrecto('nombre');
+                return true;
             }
         }
+
         function validarApellido() {
             var apellido = document.getElementById('apellido').value;
+            var apellidoRegex = /^[A-Za-záéíóúÁÉÍÓÚüÜñÑ]{1,16}$/;
+
             if (!apellido.trim()) {
                 msjError('apellido', 'Por favor, ingrese su apellido');
+                return false;
+            } else if (!apellidoRegex.test(apellido)) {
+                msjError('apellido', 'El apellido no puede contener números, espacios ni caracteres especiales y debe tener entre 1 y 16 letras');
+                return false;
             } else {
                 limpiarError('apellido');
                 msjCorrecto('apellido');
-            }
-        }
-
-        // Validar Fecha de Nacimiento
-        function validarFechaNacimiento() {
-            var fechaNacimiento = document.getElementById('fechaNacimiento').value;
-
-            if (!fechaNacimiento.trim()) {
-                msjError('fechaNacimiento', 'No puedes dejar este campo vacío');
-            } else {
-                fechaNacimiento = new Date(fechaNacimiento);
-                var now = new Date();
-                var minDate = new Date(now.getFullYear() - 18, now.getMonth(), now.getDate());
-                
-                if (fechaNacimiento > minDate) {
-                    msjError('fechaNacimiento', 'Debe ser mayor de 18 años');
-                } else {
-                    limpiarError('fechaNacimiento');
-                    msjCorrecto('fechaNacimiento');
-                }
+                return true;
             }
         }
 
 
-        //Validar Telefono
+
+        // Validar Telefono
         function validarTelefono() {
             var telefono = document.getElementById('telefono').value;
+            // Expresión regular para el formato de número de teléfono sin espacios
+            var telefonoRegex = /^9\d{8}$/;
 
-            if (telefono.length > 9) {
-                msjError('telefono','El teléfono no puede tener más de 9 dígitos');
+            if (!telefono.trim()) {
+                msjError('telefono', 'Por favor, ingrese su número de teléfono');
+                return false;
+            } else if (!telefonoRegex.test(telefono)) {
+                msjError('telefono', 'El número de teléfono debe seguir el formato chileno, por ejemplo: 912345678');
+                return false;
             } else {
                 limpiarError('telefono');
                 msjCorrecto('telefono');
-            }
-
-            if (telefono.length < 9) {
-                msjError('telefono','El teléfono no puede tener menos de 9 dígitos');
-            } else {
-                limpiarError('telefono');
-                msjCorrecto('telefono');
+                return true;
             }
         }
 
-        //Validar Correo
+
+
+
+
+        // Validar Correo
         function validarCorreo() {
             var correo = document.getElementById('email').value;
+            // Expresión regular para validar el formato básico del correo electrónico
             var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
             if (!correo.trim()) {
                 msjError('email', 'Por favor, ingrese su correo electrónico');
+                return false;
             } else if (!emailRegex.test(correo)) {
                 msjError('email', 'El correo electrónico ingresado no es válido');
+                return false;
             } else {
                 limpiarError('email');
                 msjCorrecto('email');
+                return true;
             }
         }
+
+
 
         //Validar Contraseña
         function validarContraseña() {
@@ -387,9 +402,9 @@
                 msjCorrecto('password');
             }
 
-            // Longitud mínima de 8 caracteres
-            if (contraseña.length < 8) {
-                errores.push('- La contraseña debe contener al menos 8 caracteres');
+            // Longitud mínima de 8 caracteres y máximo de 24 caracteres
+            if (contraseña.length < 8 || contraseña.length > 24) {
+                errores.push('- La contraseña debe tener entre 8 y 24 caracteres');
             } else {
                 limpiarError('password');
                 msjCorrecto('password');
@@ -403,11 +418,20 @@
                 msjCorrecto('password');
             }
 
+            // Prohibir el uso de espacios
+            if (/\s/.test(contraseña)) {
+                errores.push('- La contraseña no puede contener espacios');
+            } else {
+                limpiarError('password');
+                msjCorrecto('password');
+            }
+
             // Mostrar todos los errores encontrados
             if (errores.length > 0) {
                 msjError('password', errores.join('\n')); // Cambio aquí
             }
         }
+
 
 
 
@@ -445,6 +469,20 @@
             validarContraseña();
             validarConfirmarContraseña();
         }
+
+        function enviarFormulario() {
+    // Verificar si todos los campos están correctamente llenos y validados
+    if (validarRut() && validarNombre() && validarApellido() && validarFechaNacimiento() && validarTelefono() && validarCorreo() && validarContraseña() && validarConfirmarContraseña()) {
+        // Si todos los campos son válidos, redirigir al perfil
+        window.location.href = "{% url 'perfil' %}";
+    } else {
+        // Si algún campo no es válido, mostrar un mensaje o realizar alguna acción adicional
+        alert("Por favor, complete todos los campos correctamente antes de enviar el formulario.");
+    }
+}
+
+
+
     </script>
 </body>
 </html>

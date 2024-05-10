@@ -1,29 +1,14 @@
 {% load static %}
-
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quienes Somos - Accesorios Don Pepe</title>
-    <style>
-        .card {
-            width: 70%;
-            padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 20px; /* Bordes redondeados */
-            background-color: #fff;
-            margin: 100px; /* Margen superior e inferior */
-            margin-left: 270px;
-            text-align: center; /* Centrado del texto */
-        }
-
-    </style>
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <!-- Agregar librería de Font Awesome para los iconos -->
+    <title>Perfil</title>
+    
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-    <link type="text/css" rel="stylesheet" href="{% static 'css/inicio.css' %}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link type="text/css" rel="stylesheet" href="{% static 'css/profile.css' %}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 </head>
 <body>
@@ -62,34 +47,29 @@
                             <i class="bi bi-image"></i>
                         </a>
                     </li>
-                    <li class="nav-item dropdown">
-                        <!-- Botón dropdown para Registro/Login -->
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-outline-warning py-4 px-4 mx-2 dropdown-toggle" data-bs-toggle="dropdown" style="font-weight: 700; border: 0px; border-radius: 10px;">
-                                Registro/Login
-                                <i class="bi bi-person-fill"></i>
-
-                            <ul class="dropdown-menu" style="margin-left: 25px;
-                                margin-top: -5px;
-                                background-color: #ffc107;
-                                border: 0px;
-                                border-radius: 10px;">
-                                <li><a class="dropdown-item" style="padding: 10px; color:black; background-color: #fdfde3;" href="{% url 'register' %}">Registrarse</a></li>
-                                <li><a class="dropdown-item" style="padding: 10px; color:black; background-color: #fdfde3;" href="{% url 'register' %}">Login</a></li>
-                            </ul>
-                        </div>
+                    <li class="nav-item">
+                        <a class="btn btn-outline-warning py-4 px-4 mx-2" href="{% url 'perfil' %}">
+                            Perfil
+                            <i class="bi bi-person-fill"></i>
+                        </a>
                     </li>
                 </ul>
             </div>
         </div>
     </nav>
 
-    <!-- Recuadro con el texto de Quienes Somos -->
-    <div class="card">
-        <p>Somos una empresa dedicada a la venta de alternadores y motores de partida y todos sus despieces.</p>
-        <p>Trabajamos con repuestos originales y alternativos, para automóviles, buses, camiones, maquinaria agrícola.</p>
-        <p>Nos caracterizamos por nuestra seriedad, atención personalizada y especializada, además de excelente calidad en nuestros productos.</p>
-        <p>Despachamos en toda la Región de la Araucanía y en el resto de Chile.</p>
+    <div class="container my-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow-lg">
+                    <div class="card-body">
+                        <br>
+                        <h1 class="text-center mb-4">Perfil</h1>
+                        <!-- Aquí se pueden agregar los campos del perfil -->
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Sección de información de ubicación y contacto -->
@@ -120,5 +100,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
     <!-- Librería para Lightbox -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
+
+    <!-- Aquí se pueden agregar scripts adicionales -->
+
 </body>
 </html>
