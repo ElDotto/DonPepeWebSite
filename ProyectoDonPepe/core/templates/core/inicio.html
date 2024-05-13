@@ -72,18 +72,19 @@
     </nav>
     
     
-      
+    
+    
+	<div id="slider">
+		<div>
+			<img src="{% static 'img/motor.png' %}">
+			<img src="{% static 'img/wallpaper.png' %}">
+			<img src="{% static 'img/wp8825915.png' %}">
+			<img src="{% static 'img/imagen5.png' %}">
+
+		</div>
+	</div>
     
 
-    <!-- Sección del carrusel de ofertas -->
-    <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
-        <div class="carousel-inner">
-            <div class="carousel-item active">
-                    <img src="{% static 'img/motor.png' %}" style="height: 50%; width: 90%;" alt="Oferta 1">
-                </a>
-            </div>
-        </div>
-    </div>
    <!-- Sección de información de ubicación y contacto -->
    <div class="container-fluid py-5" style="background-color: #fdfde3; color: #e4ab00;">
     <div class="container">
@@ -112,5 +113,47 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
     <!-- Librería para Lightbox -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
+
+
+
+    <script>
+        const slider = document.getElementById('slider');
+        const slides = document.querySelectorAll('.slide');
+        const leftArrow = document.getElementById('left-arrow');
+        const rightArrow = document.getElementById('right-arrow');
+      
+        let index = 0;
+      
+        function showSlide() {
+          slides.forEach((slide, i) => {
+            if (i === index) {
+              slide.style.display = 'block';
+            } else {
+              slide.style.display = 'none';
+            }
+          });
+        }
+      
+        function nextSlide() {
+          index++;
+          if (index >= slides.length) {
+            index = 0;
+          }
+          showSlide();
+        }
+      
+        function prevSlide() {
+          index--;
+          if (index < 0) {
+            index = slides.length - 1;
+          }
+          showSlide();
+        }
+      
+        leftArrow.addEventListener('click', prevSlide);
+        rightArrow.addEventListener('click', nextSlide);
+      
+        showSlide();
+      </script>
 </body>
 </html>
