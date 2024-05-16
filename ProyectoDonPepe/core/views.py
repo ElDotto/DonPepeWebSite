@@ -38,3 +38,9 @@ def quienessomos(request):
 
 def galeria(request):
     return render(request, 'core/galeria.html')
+
+def login(request):
+    return render(request, 'core/login.html')
+
+def perfil(request):
+    return render(request, 'core/perfil.html')
