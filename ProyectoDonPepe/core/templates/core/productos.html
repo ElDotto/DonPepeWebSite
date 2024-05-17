@@ -90,177 +90,38 @@
         </div>
     </nav>
 
-<!-- Sección de categorías -->
-<div class="categorias">
-    <div class="row">
-        <div class="col-md-12">
-            <!-- Categoría: Motor de partida -->
-            <div class="categoria">
-                <h2 onclick="toggleCollapse('motor-de-partida')">Motor de partida</h2>
-                <div id="motor-de-partida" class="collapse">
-                    <!-- Contenido de la categoría Motor de partida -->
-                    <div class="row">
-                        <div class="col-md-3 producto">
-                            <img src="{% static 'img/producto1.jpg' %}" alt="Producto 1">
-                            <p>Descripción del producto 1</p>
+    <div class="categorias">
+        <div class="row">
+            <div class="col-md-12">
+                {% for categoria in categorias %}
+                <div class="card card-sm mb-2">
+                    <div class="card-body">
+                        <h2 class="card-title" onclick="toggleCollapse('{{ categoria.nombreCa|slugify }}')">{{ categoria.nombreCa }}</h2>
+                        <div id="{{ categoria.nombreCa|slugify }}" class="collapse">
+                            <div class="row">
+                                {% for producto in categoria.producto_set.all %}
+                                <div class="col-md-2 mb-2">
+                                    <div class="card">
+                                        <img src="{{ producto.foto.url }}" class="card-img-top" alt="{{ producto.nombreP }}">
+                                        <div class="card-body">
+                                            <h5 class="card-title">{{ producto.nombreP }}</h5>
+                                            <p class="card-text">{{ producto.descipcion }}</p>
+                                            <p class="card-text"><strong>Precio:</strong> ${{ producto.precio }}</p>
+                                            <p class="card-text"><strong>Stock Disponible:</strong> {{ producto.stock }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
                         </div>
-                        <div class="col-md-3 producto">
-                            <img src="{% static 'img/producto2.jpg' %}" alt="Producto 2">
-                            <p>Descripción del producto 2</p>
-                        </div>
-                        <!-- Agrega más productos -->
                     </div>
                 </div>
+                {% endfor %}
             </div>
-            <!-- Categoría: Resistencia de Calefacción -->
-            <div class="categoria">
-                <h2 onclick="toggleCollapse('resistencia-de-calefaccion')">Resistencia de Calefacción</h2>
-                <div id="resistencia-de-calefaccion" class="collapse">
-                    <!-- Contenido de la categoría Resistencia de Calefacción -->
-                    <div class="row">
-                        <div class="col-md-3 producto">
-                            <img src="{% static 'img/producto1.jpg' %}" alt="Producto 1">
-                            <p>Descripción del producto 1</p>
-                        </div>
-                        <div class="col-md-3 producto">
-                            <img src="{% static 'img/producto2.jpg' %}" alt="Producto 2">
-                            <p>Descripción del producto 2</p>
-                        </div>
-                        <!-- Agrega productos para Resistencia de Calefacción -->
-                    </div>
-                </div>
-            </div>
-            <!-- Categoría: Bobinas -->
-            <div class="categoria">
-                <h2 onclick="toggleCollapse('bobinas')">Bobinas</h2>
-                <div id="bobinas" class="collapse">
-                    <!-- Contenido de la categoría Bobinas -->
-                    <div class="row">
-                        <div class="col-md-3 producto">
-                            <img src="{% static 'img/producto1.jpg' %}" alt="Producto 1">
-                            <p>Descripción del producto 1</p>
-                        </div>
-                        <div class="col-md-3 producto">
-                            <img src="{% static 'img/producto2.jpg' %}" alt="Producto 2">
-                            <p>Descripción del producto 2</p>
-                        </div>
-                        <!-- Agrega productos para Bobinas -->
-                    </div>
-                </div>
-            </div>
-            <!-- Categoría: Terminales eléctricos -->
-            <div class="categoria">
-                <h2 onclick="toggleCollapse('terminales-electricos')">Terminales eléctricos</h2>
-                <div id="terminales-electricos" class="collapse">
-                    <!-- Contenido de la categoría Terminales eléctricos -->
-                    <div class="row">
-                        <div class="col-md-3 producto">
-                            <img src="{% static 'img/producto1.jpg' %}" alt="Producto 1">
-                            <p>Descripción del producto 1</p>
-                        </div>
-                        <div class="col-md-3 producto">
-                            <img src="{% static 'img/producto2.jpg' %}" alt="Producto 2">
-                            <p>Descripción del producto 2</p>
-                        </div>
-                        <!-- Agrega productos para Terminales eléctricos -->
-                    </div>
-                </div>
-            </div>
-            <!-- Categoría: Alternadores -->
-            <div class="categoria">
-                <h2 onclick="toggleCollapse('alternadores')">Alternadores</h2>
-                <div id="alternadores" class="collapse">
-                    <!-- Contenido de la categoría Alternadores -->
-                    <div class="row">
-                        <div class="col-md-3 producto">
-                            <img src="{% static 'img/producto1.jpg' %}" alt="Producto 1">
-                            <p>Descripción del producto 1</p>
-                        </div>
-                        <div class="col-md-3 producto">
-                            <img src="{% static 'img/producto2.jpg' %}" alt="Producto 2">
-                            <p>Descripción del producto 2</p>
-                        </div>
-                        <!-- Agrega productos para Alternadores -->
-                    </div>
-                </div>
-            </div>
-            <!-- Categoría: Corta corrientes -->
-            <div class="categoria">
-                <h2 onclick="toggleCollapse('corta-corrientes')">Corta corrientes</h2>
-                <div id="corta-corrientes" class="collapse">
-                    <!-- Contenido de la categoría Corta corrientes -->
-                    <div class="row">
-                        <div class="col-md-3 producto">
-                            <img src="{% static 'img/producto1.jpg' %}" alt="Producto 1">
-                            <p>Descripción del producto 1</p>
-                        </div>
-                        <div class="col-md-3 producto">
-                            <img src="{% static 'img/producto2.jpg' %}" alt="Producto 2">
-                            <p>Descripción del producto 2</p>
-                        </div>
-                        <!-- Agrega productos para Corta corrientes -->
-                    </div>
-                </div>
-            </div>
-            <!-- Categoría: Cables -->
-            <div class="categoria">
-                <h2 onclick="toggleCollapse('cables')">Cables</h2>
-                <div id="cables" class="collapse">
-                    <!-- Contenido de la categoría Cables -->
-                    <div class="row">
-                        <div class="col-md-3 producto">
-                            <img src="{% static 'img/producto1.jpg' %}" alt="Producto 1">
-                            <p>Descripción del producto 1</p>
-                        </div>
-                        <div class="col-md-3 producto">
-                            <img src="{% static 'img/producto2.jpg' %}" alt="Producto 2">
-                            <p>Descripción del producto 2</p>
-                        </div>
-                        <!-- Agrega productos para Cables -->
-                    </div>
-                </div>
-            </div>
-            <!-- Categoría: Materiales Eléctricos -->
-            <div class="categoria">
-                <h2 onclick="toggleCollapse('materiales-electricos')">Materiales Eléctricos</h2>
-                <div id="materiales-electricos" class="collapse">
-                    <!-- Contenido de la categoría Materiales Eléctricos -->
-                    <div class="row">
-                        <div class="col-md-3 producto">
-                            <img src="{% static 'img/producto1.jpg' %}" alt="Producto 1">
-                            <p>Descripción del producto 1</p>
-                        </div>
-                        <div class="col-md-3 producto">
-                            <img src="{% static 'img/producto2.jpg' %}" alt="Producto 2">
-                            <p>Descripción del producto 2</p>
-                        </div>
-                        <!-- Agrega productos para Materiales Eléctricos -->
-                    </div>
-                </div>
-            </div>
-            <!-- Categoría: Fusibles -->
-            <div class="categoria">
-                <h2 onclick="toggleCollapse('fusibles')">Fusibles</h2>
-                <div id="fusibles" class="collapse">
-                    <!-- Contenido de la categoría Fusibles -->
-                    <div class="row">
-                        <div class="col-md-3 producto">
-                            <img src="{% static 'img/producto1.jpg' %}" alt="Producto 1">
-                            <p>Descripción del producto 1</p>
-                        </div>
-                        <div class="col-md-3 producto">
-                            <img src="{% static 'img/producto2.jpg' %}" alt="Producto 2">
-                            <p>Descripción del producto 2</p>
-                        </div>
-                        <!-- Agrega productos para Fusibles -->
-                    </div>
-                </div>
-            </div>
-            <!-- Repite el mismo patrón para otras categorías -->
         </div>
     </div>
-    <!-- Repite el mismo patrón para otras filas de categorías -->
-</div>
+    
+
     
    <!-- Sección de información de ubicación y contacto -->
    <div class="container-fluid py-5" style="background-color: #fdfde3; color: #e4ab00;">

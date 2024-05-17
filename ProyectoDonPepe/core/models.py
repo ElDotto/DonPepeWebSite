@@ -14,7 +14,6 @@ class Usuario(models.Model):
     rut                 = models.CharField(primary_key=True,max_length=10)
     nombre              = models.CharField(max_length=20)
     apellido            = models.CharField(max_length=20)
-    fecha_nacimiento    = models.DateField(blank=False,null=False)
     telefono            = models.CharField(max_length=9)
     correo               = models.EmailField(unique=True,max_length=100, blank=True, null=True)
     clave          = models.CharField(max_length=30)
@@ -62,19 +61,19 @@ class Venta(models.Model):
 
 class Categoria(models.Model):
     idCategoria = models.AutoField(primary_key=True)
-    nombreCa = models.CharField(max_length=20)
+    nombreCa = models.CharField(max_length=50)
 
     def __str__(self) -> str:
         return self.nombreCa
 
 class Producto(models.Model):
     codProducto = models.AutoField(primary_key=True)
-    nombreP = models.CharField(max_length=20)
+    nombreP = models.CharField(max_length=100)
     stock = models.IntegerField()
-    descipcion = models.CharField(max_length=100)
-    foto = models.ImageField(upload_to="")
+    descipcion = models.CharField(max_length=500)
+    foto = models.ImageField(upload_to="core/static/img/")  # Directorio de destino para las imágenes de los productos
     precio = models.IntegerField()
-    categoria = models.ForeignKey(Categoria,on_delete=models.CASCADE)
+    categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE)
 
     def __str__(self) -> str:
         return self.nombreP
@@ -85,3 +84,4 @@ class DetalleVenta(models.Model):
     producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
     cantidad = models.IntegerField()
     subtotal = models.IntegerField()
+
