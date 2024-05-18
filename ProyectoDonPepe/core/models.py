@@ -71,7 +71,7 @@ class Producto(models.Model):
     nombreP = models.CharField(max_length=100)
     stock = models.IntegerField()
     descipcion = models.CharField(max_length=500)
-    foto = models.ImageField(upload_to="core/static/img/")  # Directorio de destino para las imágenes de los productos
+    foto = models.ImageField(upload_to="ProyectoDonPepe/core/static/img/")  # Directorio de destino para las imágenes de los productos
     precio = models.IntegerField()
     categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE)
 

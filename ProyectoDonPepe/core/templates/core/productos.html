@@ -103,6 +103,8 @@
                                 <div class="col-md-2 mb-2">
                                     <div class="card">
                                         <img src="{{ producto.foto.url }}" class="card-img-top" alt="{{ producto.nombreP }}">
+                                        <!-- Agrega esta línea para imprimir la ruta de la imagen -->
+                                        <p>Ruta de la imagen: {{ producto.foto.url }}</p>
                                         <div class="card-body">
                                             <h5 class="card-title">{{ producto.nombreP }}</h5>
                                             <p class="card-text">{{ producto.descipcion }}</p>
