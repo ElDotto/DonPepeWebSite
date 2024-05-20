@@ -20,10 +20,18 @@ def register(request):
         # Validaciones
         if Usuario.objects.filter(correo=emailUser).exists():
             messages.error(request, "Este correo ya está registrado!")
-            return redirect('register') 
+            return redirect('register')
+        
+        if Usuario.objects.filter(rut=rutUser).exists():
+            messages.error(request, "Este RUT ya está registrado!")
+            return redirect('register')
+        
+        if claveUser != confclaveUser:
+            messages.error(request, "La contraseña no coincide")
+            return redirect('register')
                 
         rol = Rol.objects.get(idRol=2)  # Suponiendo que el rol "2" es el rol que deseas asignar
-        usuario = Usuario.objects.create(rut=rutUser, nombre=nombreUser, apellido=apellidoUser, telefono=telefonoUser, correo=emailUser, clave=claveUser, confclave=confclaveUser, rol=rol)
+        usuario = Usuario.objects.create(rut=rutUser, nombre=nombreUser, apellido=apellidoUser, telefono=telefonoUser, correo=emailUser, clave=confclaveUser, rol=rol)
 
         messages.success(request, 'Cuenta creada con éxito.')
         

@@ -71,7 +71,7 @@
     
     {% if messages %}
     {% for message in messages %}
-        <div class="alert {{ message.tags }} alert-dismissible fade show" style="margin-inline: 20px;" role="alert">
+        <div class="alert {{ message.tags }} alert-dismissible fade show" style="margin-inline: 60px;" role="alert">
             {{ message }}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
@@ -84,16 +84,12 @@
                     <div class="card-body">
                         <br>
                         <h1 class="text-center mb-4">Registro</h1>
-                        <form action="{% url 'register' %}" id="registrationForm" method="post">
+                        <form action="{% url 'register' %}" id="registrationForm" method="POST">
                             {% csrf_token %}
                             <div class="mb-3">
                                 <label for="rut" class="form-label">RUT:</label>
-                                <div class="input-group">
-                                    <input type="text" class="form-control" id="rutNumero" name="rutNumero" placeholder="12345678" required>
-                                    <span class="input-group-text">-</span>
-                                    <input type="text" class="form-control" id="rutVerificador" name="rutVerificador" placeholder="9" maxlength="1" required>
-                                </div>
-                                <div id="rutFeedback"></div>
+                                <input type="text" class="form-control" id="rut" name="rut" placeholder="12345678-9" required>
+                                <div id="rutFeedback" class="invalid-feedback"></div>
                             </div>
 
                             <div class="mb-3">
@@ -134,8 +130,7 @@
                             </div>
 
                             <div class="d-grid gap-2">
-                                <button type="submit" class="btn btn-primary" onclick="enviarFormulario()">Registrarse</button>
-
+                                <input id="submit" type="submit" class="btn btn-primary" value="Registrarse"></input>
                             </div>
                         </form>
                     </div>
@@ -175,18 +170,27 @@
 
     <script>
         document.getElementById('registrationForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-            validarForm();
+            if (!validarForm()) {
+                event.preventDefault();
+            }
         });
+
+        function validarForm() {
+            let valid = true;
+            valid &= validarRut();
+            valid &= validarNombre();
+            valid &= validarApellido();
+            valid &= validarTelefono();
+            valid &= validarCorreo();
+            valid &= validarContraseña();
+            valid &= validarConfirmarContraseña();
+            return valid;
+        }
+
         // Event listener para validar RUT cuando se sale del campo
-        document.getElementById('rutNumero').addEventListener('blur', function() {
+        document.getElementById('rut').addEventListener('blur', function() {
             validarRut();
         });
-
-        document.getElementById('rutVerificador').addEventListener('blur', function() {
-            validarRut();
-        });
-
         // Event listener para validar nombre cuando se sale del campo
         document.getElementById('nombre').addEventListener('blur', function() {
             validarNombre();
@@ -260,41 +264,35 @@
         // Validar RUT Chileno
         var Fn = {
             // Valida el rut con su cadena completa "XXXXXXXX-X"
-            validaRut: function (rutCompleto) {
-                if (!/^[0-9]+[-|‐]{1}[0-9kK]{1}$/.test(rutCompleto))
+            validaRut : function (rutCompleto) {
+                if (!/^[0-9]+[-|‐]{1}[0-9kK]{1}$/.test( rutCompleto ))
                     return false;
-                var tmp = rutCompleto.split('-');
-                var digv = tmp[1];
-                var rut = tmp[0];
-                if (digv == 'K') digv = 'k';
-                return (Fn.dv(rut) == digv);
+                var tmp 	= rutCompleto.split('-');
+                var digv	= tmp[1]; 
+                var rut 	= tmp[0];
+                if ( digv == 'K' ) digv = 'k' ;
+                return (Fn.dv(rut) == digv );
             },
-            dv: function (T) {
-                var M = 0, S = 1;
-                for (; T; T = Math.floor(T / 10))
-                    S = (S + T % 10 * (9 - M++ % 6)) % 11;
-                return S ? S - 1 : 'k';
+            dv : function(T){
+                var M=0,S=1;
+                for(;T;T=Math.floor(T/10))
+                    S=(S+T%10*(9-M++%6))%11;
+                return S?S-1:'k';
             }
         }
-        // Validar RUT Chileno
+        //Validar Rut Chileno
         function validarRut() {
-            var rutNumero = document.getElementById('rutNumero').value;
-            var rutVerificador = document.getElementById('rutVerificador').value;
-            var rutCompleto = rutNumero + '-' + rutVerificador;
-
-            if (!rutNumero.trim() || !rutVerificador.trim()) {
-                msjError('rut', 'Por favor, ingrese su RUT completo');
-            } else if (!/^\d+$/.test(rutNumero)) {
-                msjError('rut', 'El RUT solo puede contener números');
-            } else if (rutVerificador.length === 0) {
-                msjError('rut', 'Por favor, ingrese el dígito verificador');
-            } else if (!Fn.validaRut(rutCompleto)) {
+            var rut = document.getElementById('rut').value;
+            if (!rut.trim()) {
+                msjError('rut', 'Por favor, ingrese su RUT');
+            } else if (!Fn.validaRut(rut)) {
                 msjError('rut', 'El RUT ingresado no es válido');
             } else {
                 limpiarError('rut');
                 msjCorrecto('rut');
             }
-        }
+            }
+        
 
 
 
@@ -469,18 +467,7 @@
             validarContraseña();
             validarConfirmarContraseña();
         }
-
-        function enviarFormulario() {
-    // Verificar si todos los campos están correctamente llenos y validados
-    if (validarRut() && validarNombre() && validarApellido() && validarFechaNacimiento() && validarTelefono() && validarCorreo() && validarContraseña() && validarConfirmarContraseña()) {
-        // Si todos los campos son válidos, redirigir al perfil
-        window.location.href = "{% url 'perfil' %}";
-    } else {
-        // Si algún campo no es válido, mostrar un mensaje o realizar alguna acción adicional
-        alert("Por favor, complete todos los campos correctamente antes de enviar el formulario.");
-    }
-}
-
+    
 
 
     </script>
