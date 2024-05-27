@@ -67,7 +67,7 @@ class Categoria(models.Model):
         return self.nombreCa
 
 class Producto(models.Model):
-    codProducto = models.AutoField(primary_key=True)
+    codProducto = models.IntegerField(primary_key=True)
     nombreP = models.CharField(max_length=100)
     stock = models.IntegerField()
     descipcion = models.CharField(max_length=500)

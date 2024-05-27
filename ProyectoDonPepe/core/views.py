@@ -141,7 +141,22 @@ def agregar(request):
     }   
     return render(request, 'core/agregar.html', contexto)
 
-@login_required
+def ingresarproducto(request):
+
+    idProducto = request.POST['id']
+    nombreProducto = request.POST['nombre']
+    stockProducto = request.POST['stock']
+    descripcion = request.POST['descripcion']
+    foto = request.POST['foto']
+    precio = request.POST['precio']
+    categoria = request.POST['categoria']
+
+    categoriaP= Categoria.objects.get(idCategoria= categoria)
+
+    producto = Producto.objects.create(codProducto= idProducto, nombreP= nombreProducto, stock= stockProducto, descipcion= descripcion, foto= foto, precio= precio, categoria= categoriaP)
+    messages.success(request, 'Producto ingresado correctamente.')
+    return redirect('agregar')
+@login_required 
 def productos(request, categoria_id=None):
     if categoria_id is not None:
         categoria = Categoria.objects.get(pk=categoria_id)

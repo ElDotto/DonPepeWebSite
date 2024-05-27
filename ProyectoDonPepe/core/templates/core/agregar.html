@@ -100,13 +100,13 @@
                 <div class="card-body">
                     <br>
                     <h1 class="text-center mb-4">Agregar Producto</h1>
-                    <form action="{% url 'register' %}" id="registrationForm" method="POST">
+                    <form action="{% url 'ingresarproducto' %}" id="ingresarForm" method="POST">
                         {% csrf_token %}
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="codigo" class="form-label">Codigo Producto:</label>
-                                    <input type="text" class="form-control" id="codigo" name="codigo" required>
+                                    <label for="id" class="form-label">ID Producto:</label>
+                                    <input type="text" class="form-control" id="id" name="id" required>
                                 </div>
                                 <div class="mb-3">
                                     <label for="nombre" class="form-label">Nombre Producto:</label>
@@ -144,7 +144,42 @@
                             <input id="submit" type="submit" class="btn btn-primary" value="Agregar producto"></input>
                         </div>
                     </form>
+
+                    
+
+
                 </div>
+
+                <table class="col-md-12 col-xl-12" border="1">
+                    <thead>
+                        <tr>
+                            <th>Id Producto</th>
+                            <th>Nombre</th>
+                            <th>Stock</th>
+                            <th>Descripcion</th>
+                            <th>Foto</th>
+                            <th>Precio</th>
+                            <th>Categoria</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for m in productoListado %}
+                        <tr>
+                            <td>{{ m.codProducto }}</td>
+                            <td>{{ m.nombreP }}</td>
+                            <td>{{ m.stock }}</td>
+                            <td>{{ m.descipcion }}</td>
+                            <td>{{ m.foto }}</td>
+                            <td>{{ m.precio }}</td>
+                            <td>{{ m.categoria }}</td>
+            
+                            <td>
+                                <a href="{% url 'editarshoes' m.id_producto %}" class="btn_mod">Modificar</a>
+                                <a href="{% url 'eliminarZap' m.id_producto %}" class="btn_del">Eliminar</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
             </div>
         </div>
     </div>
