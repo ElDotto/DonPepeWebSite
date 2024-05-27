@@ -1,7 +1,6 @@
 from django.urls import path
-from .views import inicio, register, productos, quienessomos, galeria, editarperfil, login_user, cerrarsesion
-from django.conf.urls.static import static
-from django.contrib.auth import views as auth_views
+from .views import inicio, register, productos, quienessomos, galeria, login_user, cerrarsesion, editarperfil, actualizarperfil, administrador, agregar
+
 
 urlpatterns = [
     path('', inicio, name="inicio"),
@@ -9,7 +8,10 @@ urlpatterns = [
     path('productos/', productos, name="productos"),
     path('quienessomos/', quienessomos, name="quienessomos"),
     path('galeria/', galeria, name="galeria"),
-    path('editarperfil/', editarperfil, name="editarperfil"),
     path('login_user/', login_user, name="login_user"),
     path('cerrarsesion/', cerrarsesion, name="cerrarsesion"),
+    path('editarperfil/', editarperfil, name="editarperfil"),
+    path('actualizarperfil/', actualizarperfil, name="actualizarperfil"),
+    path('administrador/', administrador, name="administrador"),
+    path('agregar/', agregar, name="agregar"),
 ] 

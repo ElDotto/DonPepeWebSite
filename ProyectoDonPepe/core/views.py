@@ -11,6 +11,9 @@ def inicio(request):
     return render(request, 'core/inicio.html')
 
 def register(request):
+    if request.user.is_authenticated:
+        return redirect('inicio')
+    
     if request.method == "POST":
         nombreUser = request.POST['nombre']
         apellidoUser = request.POST['apellido']
@@ -43,11 +46,14 @@ def register(request):
         user.save()
         messages.success(request, 'Cuenta creada con éxito.')
         
-        return redirect('inicio')
+        return redirect('login_user')
 
     return render(request, 'core/register.html')
 
 def login_user(request):
+    if request.user.is_authenticated:
+        return redirect('inicio')
+    
     if request.method == 'POST':
         email = request.POST['username']
         password = request.POST['pass1']
@@ -56,37 +62,84 @@ def login_user(request):
         print("Usuario autenticado: ", user)
         if user is not None:
             login(request, user)
+            if user.is_superuser:  # Verificar si el usuario es un superusuario
+                # Asignar el rol de administrador al superusuario
+                rol_administrador = Rol.objects.get(idRol=1)  # Suponiendo que el id del rol de administrador es 1
+                user.rol = rol_administrador
+            else:
+                # Asignar el rol de usuario al usuario normal
+                rol_usuario = Rol.objects.get(idRol=2)  # Suponiendo que el id del rol de usuario es 2
+                user.rol = rol_usuario
+            user.save()
             messages.success(request, 'Inicio de sesión exitoso.')
-            return redirect('inicio')  # Redirigir a la página de inicio o a la página deseada
+            return redirect('inicio')
         else:
             messages.error(request, 'Correo o contraseña incorrectos.')
+
     return render(request, 'core/login_user.html')
 
+def cerrarsesion(request):
+    logout(request)
+    messages.success(request, "Sesión cerrada correctamente!!")
+    return redirect('inicio')
 
-def categorias(request):
-    categorias = Categoria.objects.all()
-    return render(request, 'core/categorias.html', {'categorias': categorias})
+
+@login_required
+def editarperfil(request):
+    user = request.user
+    usuario = Usuario.objects.get(correo=user.username)
+    context = {
+        'usuario': usuario
+    }
+    return render(request, 'core/editarperfil.html', context)
+
+@login_required
+def actualizarperfil(request):
+    user = request.user
+    usuario = Usuario.objects.get(correo=user.username)
+    if request.method == "POST":
+        nombreUsuario = request.POST['nombre']
+        apellidoUsuario = request.POST['apellido']
+        telefonoUsuario = request.POST['telefono']
+        emailUsuario = request.POST['email']
+        
+        # Verificar si el correo electrónico ha sido cambiado
+        if emailUsuario != user.username:
+            # Si el nuevo correo electrónico es diferente al actual del usuario, realizar validación
+            if User.objects.filter(username=emailUsuario).exists():
+                messages.error(request, "Este correo ya está registrado!")
+                return redirect('editarperfil')
+        
+        usuario.nombre = nombreUsuario
+        usuario.apellido = apellidoUsuario
+        usuario.telefono = telefonoUsuario
+        usuario.correo = emailUsuario
+        user.username = emailUsuario
+        user.email= emailUsuario
+        
+        usuario.save()
+        user.save()
+
+        messages.success(request, 'Cuenta actualizada con éxito.')
+        return redirect('editarperfil')
+    
+    context = {
+        'usuario': usuario
+    }
+    return render(request, 'core/editarperfil.html', context)
 
 
-def regiones(request):
-    regiones = Region.objects.all()
-    return render(request, 'core/regiones.html', {'regiones': regiones})
+def administrador(request):
+    return render(request, 'core/administrador.html')
 
-def comunas(request):
-    comunas = Comuna.objects.all()
-    return render(request, 'core/comunas.html', {'comunas': comunas})
-
-def direcciones(request):
-    direcciones = Direccion.objects.all()
-    return render(request, 'core/direcciones.html', {'direcciones': direcciones})
-
-def ventas(request):
-    ventas = Venta.objects.all()
-    return render(request, 'core/ventas.html', {'ventas': ventas})
-
-def detalles_venta(request):
-    detalles_venta = DetalleVenta.objects.all()
-    return render(request, 'core/detalles_venta.html', {'detalles_venta': detalles_venta})
+def agregar(request):
+    productoListado = Producto.objects.all()
+    categorias= Categoria.objects.all()
+    contexto = {
+        "categorias": categorias,
+        "productos": productoListado
+    }   
+    return render(request, 'core/agregar.html', contexto)
 
 @login_required
 def productos(request, categoria_id=None):
@@ -104,23 +157,17 @@ def productos(request, categoria_id=None):
     
     return render(request, 'core/productos.html', {'productos': productos, 'categorias': categorias, 'categoria_actual': categoria})
 
-
 def quienessomos(request):
     return render(request, 'core/quienessomos.html')
 
-@login_required
 def galeria(request):
     return render(request, 'core/galeria.html')
 
 
 
-def editarperfil(request):
-    return render(request, 'core/editarperfil.html')
 
-def cerrarsesion(request):
-    logout(request)
-    messages.success(request, "Sesión cerrada correctamente!!")
-    return redirect('inicio')
+
+
 
 
 
