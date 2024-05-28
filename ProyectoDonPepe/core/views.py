@@ -156,6 +156,18 @@ def ingresarproducto(request):
     producto = Producto.objects.create(codProducto= idProducto, nombreP= nombreProducto, stock= stockProducto, descipcion= descripcion, foto= foto, precio= precio, categoria= categoriaP)
     messages.success(request, 'Producto ingresado correctamente.')
     return redirect('agregar')
+
+def listaproducto(request):
+    return render(request, 'core/listaproducto.html')
+
+def listausuarios(request):
+    usuariosListado = Usuario.objects.all()
+    contexto = {
+        "usuarios" : usuariosListado
+    }
+    return render(request, 'core/listausuarios.html', contexto)
+
+
 @login_required 
 def productos(request, categoria_id=None):
     if categoria_id is not None:
