@@ -12,24 +12,6 @@
     <link type="text/css" rel="stylesheet" href="{% static 'css/inicio.css' %}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 
-    <style>
-        /* Estilos para las categorías y productos */
-        .categoria {
-            margin-bottom: 20px;
-        }
-        .producto {
-            margin-top: 20px;
-        }
-        /* Estilos para el slider */
-        .collapse {
-            display: none;
-            transition: all 0.3s ease;
-            overflow: hidden;
-        }
-        .collapse.show {
-            display: block;
-        }
-    </style>
 
 </head>
 <body>
@@ -107,38 +89,27 @@
         </div>
     </nav>
 <br>
-    <div class="categorias">
-        <div class="row">
-            <div class="col-md-12">
-                {% for categoria in categorias %}
-                <div class="card card-sm mb-2">
-                    <div class="card-body">
-                        <h2 class="card-title" onclick="toggleCollapse('{{ categoria.nombreCa|slugify }}')">{{ categoria.nombreCa }}</h2>
-                        <div id="{{ categoria.nombreCa|slugify }}" class="collapse">
-                            <div class="row">
-                                {% for producto in categoria.producto_set.all %}
-                                <div class="col-md-2 mb-2">
-                                    <div class="card">
-                                        <img src="{{ producto.foto.url }}" class="card-img-top" alt="{{ producto.nombreP }}">
-                                        <!-- Agrega esta línea para imprimir la ruta de la imagen -->
-                                        <p>Ruta de la imagen: {{ producto.foto.url }}</p>
-                                        <div class="card-body">
-                                            <h5 class="card-title">{{ producto.nombreP }}</h5>
-                                            <p class="card-text">{{ producto.descipcion }}</p>
-                                            <p class="card-text"><strong>Precio:</strong> ${{ producto.precio }}</p>
-                                            <p class="card-text"><strong>Stock Disponible:</strong> {{ producto.stock }}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                {% endfor %}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
-        </div>
+    
+<div class="container-fluid">
+    <div class="row">
+        {% for m in productos %}
+        <tr style="text-align: center;">
+            <td>{{ m.codProducto }}</td>
+            <td>{{ m.nombreP }}</td>
+            <td>{{ m.stock }}</td>
+            <td>{{ m.descipcion }}</td>
+            <td>{{ m.foto }}</td>
+            <td>{{ m.precio }}</td>
+            <td>{{ m.categoria }}</td>
+
+
+            <td>
+                <a href="{% url 'borrarproducto' m.codProducto  %}" class="btn btn-danger"><i class="bi bi-trash3"></i></a>
+            </td>
+        </tr>
+        {% endfor %}
     </div>
+  </div>
     
 
     

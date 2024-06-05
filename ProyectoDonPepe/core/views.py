@@ -133,12 +133,11 @@ def administrador(request):
     return render(request, 'core/administrador.html')
 
 def agregar(request):
-    productoListado = Producto.objects.all()
-    categorias= Categoria.objects.all()
+    categoriaProducto = Categoria.objects.all()
     contexto = {
-        "categorias": categorias,
-        "productos": productoListado
-    }   
+        "categorias" : categoriaProducto
+    }
+
     return render(request, 'core/agregar.html', contexto)
 
 def ingresarproducto(request):
@@ -158,31 +157,44 @@ def ingresarproducto(request):
     return redirect('agregar')
 
 def listaproducto(request):
-    return render(request, 'core/listaproducto.html')
+    productoListado = Producto.objects.all()
+    categorias= Categoria.objects.all()
+    contexto = {
+        "categorias": categorias,
+        "productos": productoListado
+    }   
+    return render(request, 'core/listaproducto.html', contexto)
+
+def editarproducto(request):
+    return render(request, 'core/editarproducto.html')
+
+def borrarproducto(request, id_producto):
+    productoborrar = Producto.objects.get(codProducto = id_producto)
+    productoborrar.delete()
+    messages.success(request, 'Producto eliminado correctamente.')
+    return redirect('listaproducto')
+
 
 def listausuarios(request):
-    usuariosListado = Usuario.objects.all()
+    usuariosListado = Usuario.objects.exclude(rut=None).exclude(rut='').all()
     contexto = {
-        "usuarios" : usuariosListado
+        "usuarios": usuariosListado
     }
     return render(request, 'core/listausuarios.html', contexto)
 
+def borrarperfil(request, rut):
+    perfilborrar = Usuario.objects.get(rut = rut)
+    perfilborrar.delete()
+    messages.success(request, 'Perfil eliminado correctamente.')
+    return redirect('listausuarios')
 
 @login_required 
-def productos(request, categoria_id=None):
-    if categoria_id is not None:
-        categoria = Categoria.objects.get(pk=categoria_id)
-        productos = categoria.producto_set.all()
-    else:
-        productos = Producto.objects.all()
-        categoria = None
-    categorias = Categoria.objects.all()
-    
-    # Convertir el precio de cada producto al formato deseado (215000)
-    for producto in productos:
-        producto.precio = str(int(producto.precio))
-    
-    return render(request, 'core/productos.html', {'productos': productos, 'categorias': categorias, 'categoria_actual': categoria})
+def productos(request):
+    productoListado = Producto.objects.all()
+    contexto = {
+        "productos": productoListado
+    }   
+    return render(request, 'core/productos.html', contexto)
 
 def quienessomos(request):
     return render(request, 'core/quienessomos.html')

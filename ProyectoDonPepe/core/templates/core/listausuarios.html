@@ -61,7 +61,7 @@
                             </button>
                             <ul class="dropdown-menu" style="margin-left: 25px; margin-top: -5px; background-color: #ffc107; border: 0px; border-radius: 10px;">
                                 {% if user.is_superuser %}
-                                    <li><a class="dropdown-item" style="padding: 10px; color:black; background-color: #fdfde3;" href="#">Administrador</a></li>
+                                    <li><a class="dropdown-item" style="padding: 10px; color:black; background-color: #fdfde3;" href="{% url 'administrador' %}">Administrador</a></li>
                                 {% else %}
                                     <li><a class="dropdown-item" style="padding: 10px; color:black; background-color: #fdfde3;" href="{% url 'editarperfil' %}">Editar Perfil</a></li>
                                 {% endif %}
@@ -100,7 +100,7 @@
                 <div class="card-body">
                     <br>
                     <h1 class="text-center mb-4">Listado de Usuarios</h1>
-                    <table class="col-md-12 col-xl-12" border="1">
+                    <table class="col-md-12 col-xl-12" >
                         <thead>
                             <tr style="text-align: center;">
                                 <th>Rut Usuario</th>
@@ -122,8 +122,7 @@
                                 <td>{{ m.rol }}</td>
                 
                                 <td>
-                                    <a href="#" class="btn_mod">Modificar</a>
-                                    <a href="#" class="btn_del">Eliminar</a>
+                                    <a href="{% url 'borrarperfil' m.rut %}" class="btn btn-danger"><i class="bi bi-trash3"></i></a>
                                 </td>
                             </tr>
                             {% endfor %}
