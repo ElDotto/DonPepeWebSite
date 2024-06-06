@@ -100,7 +100,7 @@
                 <div class="card-body">
                     <br>
                     <h1 class="text-center mb-4">Agregar Producto</h1>
-                    <form action="{% url 'ingresarproducto' %}" id="ingresarForm" method="POST">
+                    <form action="{% url 'ingresarproducto' %}" id="ingresarForm" method="POST" enctype="multipart/form-data">
                         {% csrf_token %}
                         <div class="row">
                             <div class="col-md-6">

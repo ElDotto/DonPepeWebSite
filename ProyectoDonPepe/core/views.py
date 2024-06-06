@@ -146,7 +146,7 @@ def ingresarproducto(request):
     nombreProducto = request.POST['nombre']
     stockProducto = request.POST['stock']
     descripcion = request.POST['descripcion']
-    foto = request.POST['foto']
+    foto = request.FILES['foto']
     precio = request.POST['precio']
     categoria = request.POST['categoria']
 
