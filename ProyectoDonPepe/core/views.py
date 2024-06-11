@@ -165,8 +165,39 @@ def listaproducto(request):
     }   
     return render(request, 'core/listaproducto.html', contexto)
 
-def editarproducto(request):
-    return render(request, 'core/editarproducto.html')
+def editarproducto(request, id_producto):
+    producto = Producto.objects.get(codProducto = id_producto)
+    listaCategoria = Categoria.objects.all()
+    contexto = {
+        "producto" : producto,
+        "listacategoria" : listaCategoria
+    }
+    return render(request, 'core/editarproducto.html', contexto)
+
+def actualizaproducto(request):
+    if request.method == "POST":
+        idProducto = request.POST['id']
+        nombreProducto = request.POST['nombre']
+        stockProducto = request.POST['stock']
+        descripcion = request.POST['descripcion']
+        precio = request.POST['precio']
+        categoria = request.POST['categoria']
+
+        producto = Producto.objects.get(codProducto=idProducto)
+        categoriaP = Categoria.objects.get(idCategoria=categoria)
+
+        producto.nombreP = nombreProducto
+        producto.stock = stockProducto
+        producto.descipcion = descripcion
+        producto.precio = precio
+        producto.categoria = categoriaP
+
+        if 'imagen' in request.FILES:
+            producto.foto = request.FILES['imagen']
+
+        producto.save()
+        return redirect('listaproducto')
+
 
 def borrarproducto(request, id_producto):
     productoborrar = Producto.objects.get(codProducto = id_producto)

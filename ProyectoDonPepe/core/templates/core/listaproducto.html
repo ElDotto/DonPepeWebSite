@@ -1,4 +1,5 @@
 {% load static %}
+{% load custom_filters %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -120,12 +121,13 @@
                                 <td>{{ m.stock }}</td>
                                 <td>{{ m.descipcion }}</td>
                                 <td><img src="{{ m.foto.url }}" alt="{{m.nombreP}}" style="max-width: 150px;"></td>
-                                <td>{{ m.precio }}</td>
+                                <td>{{ m.precio |format_clp }}</td>
                                 <td>{{ m.categoria }}</td>
 
                 
                                 <td>
-                                    <a href="{% url 'borrarproducto' m.codProducto  %}" class="btn btn-danger"><i class="bi bi-trash3"></i></a>
+                                    <a href="{% url 'editarproducto' m.codProducto  %}" class="btn btn-warning" ><i class="bi bi-trash3"></i></a>
+                                    <a href="{% url 'borrarproducto' m.codProducto  %}" class="btn btn-danger" ><i class="bi bi-trash3"></i></a>
                                 </td>
                             </tr>
                             {% endfor %}

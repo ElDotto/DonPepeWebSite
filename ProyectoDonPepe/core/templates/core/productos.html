@@ -1,5 +1,5 @@
 {% load static %}
-
+{% load custom_filters %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -102,13 +102,13 @@
 <div class="container-fluid">
     <div class="row">
         {% for m in productos %}
-        <div class="col-md-4 col-sm-12">
+        <div class="col-md-4 col-sm-12" style="width: 25%; margin-bottom: 2%;">
             <div class="card-header" style="text-align: center;">
                 <img src="{{ m.foto.url }}" alt="" class="card-img-top imagen-producto" >
             </div>
             <div style="text-align: center;">
-                <h5>{{ m.nombreP }}</h5>
-                <h7>{{ m.precio }}</h7>
+                <h5 >{{ m.nombreP }}</h5>
+                <h7 >{{ m.precio|format_clp }}</h7>
             </div>
             <div class="card-footer" style="text-align: center;">
                 <button class="btn btn-danger">Detalles</button>
