@@ -61,7 +61,7 @@
                             </button>
                             <ul class="dropdown-menu" style="margin-left: 25px; margin-top: -5px; background-color: #ffc107; border: 0px; border-radius: 10px;">
                                 {% if user.is_superuser %}
-                                    <li><a class="dropdown-item" style="padding: 10px; color:black; background-color: #fdfde3;" href="#">Administrador</a></li>
+                                    <li><a class="dropdown-item" style="padding: 10px; color:black; background-color: #fdfde3;" href="{% url 'administrador' %}">Administrador</a></li>
                                 {% else %}
                                     <li><a class="dropdown-item" style="padding: 10px; color:black; background-color: #fdfde3;" href="{% url 'editarperfil' %}">Editar Perfil</a></li>
                                 {% endif %}

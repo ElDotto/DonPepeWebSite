@@ -1,6 +1,7 @@
 
 from django.db import models
 from django.contrib.auth.models import User
+from django.urls import reverse
 
 class Rol(models.Model):
     idRol = models.AutoField(primary_key=True)
@@ -77,6 +78,9 @@ class Producto(models.Model):
 
     def __str__(self) -> str:
         return self.nombreP
+    
+    def get_absolute_url(self):
+        return reverse('detalleproducto', kwargs={'pk': self.pk})
 
 class DetalleVenta(models.Model):
     idDetalle = models.AutoField(primary_key=True)

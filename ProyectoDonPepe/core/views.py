@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate, logout
@@ -226,6 +226,10 @@ def productos(request):
         "productos": productoListado
     }   
     return render(request, 'core/productos.html', contexto)
+
+def detalleproducto(request, pk):
+    producto = get_object_or_404(Producto, pk=pk)
+    return render (request, 'core/detalleproducto.html', {'producto': producto})
 
 def quienessomos(request):
     return render(request, 'core/quienessomos.html')
