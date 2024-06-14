@@ -1,6 +1,5 @@
 from django.urls import path
-from .views import inicio, register, productos, quienessomos, galeria, login_user, cerrarsesion, editarperfil, actualizarperfil, administrador, agregar, ingresarproducto, listaproducto, listausuarios, borrarperfil, borrarproducto, editarproducto, actualizaproducto, detalleproducto
-
+from .views import inicio, register, productos, quienessomos, galeria, login_user, cerrarsesion, editarperfil, actualizarperfil, administrador, agregar, ingresarproducto, listaproducto, listausuarios, borrarperfil, borrarproducto, editarproducto, actualizaproducto, detalleproducto, exportar_productos_excel, buscar_productos
 
 urlpatterns = [
     path('', inicio, name="inicio"),
@@ -22,4 +21,6 @@ urlpatterns = [
     path('editarproducto/<id_producto>/', editarproducto, name="editarproducto"),
     path('actualizaproducto/', actualizaproducto, name="actualizaproducto"),
     path('detalleproducto/<int:pk>', detalleproducto, name="detalleproducto"),
+    path('exportar_productos_excel/', exportar_productos_excel, name='exportar_productos_excel'),
+    path('buscar_productos/', buscar_productos, name='buscar_productos'),
 ] 

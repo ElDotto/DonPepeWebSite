@@ -101,6 +101,26 @@
                 <div class="card-body">
                     <br>
                     <h1 class="text-center mb-4">Listado de Productos</h1>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div>
+                            <a href="{% url 'exportar_productos_excel' %}" class="btn btn-success">
+                                Exportar a Excel
+                                <i class="fas fa-file-excel"></i>
+                            </a>
+                        </div>
+                        <div class="d-flex">
+                            <input type="text" id="searchInput" class="form-control me-2" style="width: 500px;" placeholder="Buscar por nombre o ID...">
+                            <select id="searchType" class="form-select">
+                                <option value="nombre">Buscar por nombre</option>
+                                <option value="id">Buscar por ID</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+
+
+
+                    
                     <table class="col-md-12 col-xl-12" >
                         <thead>
                             <tr style="text-align: center;">
@@ -113,25 +133,24 @@
                                 <th>Categoria</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="productosTable">
                             {% for m in productos %}
                             <tr style="text-align: center;">
                                 <td>{{ m.codProducto }}</td>
                                 <td>{{ m.nombreP }}</td>
                                 <td>{{ m.stock }}</td>
                                 <td style="width: 25%; font-size: 12px;">{{ m.descipcion }}</td>
-                                <td><img src="{{ m.foto.url }}" alt="{{m.nombreP}}" style="max-width: 150px;"></td>
-                                <td>{{ m.precio |format_clp }}</td>
+                                <td><img src="{{ m.foto.url }}" alt="{{ m.nombreP }}" style="max-width: 150px;"></td>
+                                <td>{{ m.precio | format_clp }}</td>
                                 <td>{{ m.categoria }}</td>
-
-                
                                 <td>
-                                    <a href="{% url 'editarproducto' m.codProducto  %}" class="btn btn-warning" ><i class="bi bi-trash3"></i></a>
-                                    <a href="{% url 'borrarproducto' m.codProducto  %}" class="btn btn-danger" ><i class="bi bi-trash3"></i></a>
+                                    <a href="{% url 'editarproducto' m.codProducto  %}" class="btn btn-warning"><i class="bi bi-pencil"></i></a>
+                                    <a href="{% url 'borrarproducto' m.codProducto  %}" class="btn btn-danger"><i class="bi bi-trash"></i></a>
                                 </td>
                             </tr>
                             {% endfor %}
                         </tbody>
+                        
                 </div>
 
                 
@@ -148,5 +167,41 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
     <!-- Librería para Lightbox -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#searchInput').on('input', function() {
+                var searchText = $(this).val().toLowerCase();
+                var searchType = $('#searchType').val();
+                $('#productosTable tr').each(function() {
+                    var match = false;
+                    var lineText = $(this).text().toLowerCase();
+                    if (searchType === 'nombre') {
+                        var productName = $(this).find('td:nth-child(2)').text().toLowerCase();
+                        if (productName.indexOf(searchText) !== -1) {
+                            match = true;
+                        }
+                    } else if (searchType === 'id') {
+                        var productId = $(this).find('td:first-child').text().toLowerCase();
+                        if (productId.indexOf(searchText) !== -1) {
+                            match = true;
+                        }
+                    }
+    
+                    if (match) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                });
+            });
+    
+            $('#searchType').on('change', function() {
+                $('#searchInput').trigger('input');
+            });
+        });
+    </script>
+    
+    
+    
 </body>
 </html>

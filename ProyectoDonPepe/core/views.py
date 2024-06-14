@@ -4,7 +4,10 @@ from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from .models import Usuario, Producto, Venta, Categoria, DetalleVenta, Rol, Region, Comuna, Direccion
-
+import openpyxl
+from openpyxl.styles import Alignment, Font, Border, Side, PatternFill
+from openpyxl.utils import get_column_letter
+from django.http import HttpResponse
 
 # Create your views here.
 def inicio(request):
@@ -164,6 +167,89 @@ def listaproducto(request):
         "productos": productoListado
     }   
     return render(request, 'core/listaproducto.html', contexto)
+
+def exportar_productos_excel(request):
+    productos = Producto.objects.all()
+    
+    # Crear un libro de trabajo
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Productos"
+    
+    # Estilo de encabezado
+    header_font = Font(bold=True, size=12)
+    alignment_center = Alignment(horizontal="center", vertical="center")
+    
+    # Definir estilo de borde delgado
+    thin_border = Border(
+        left=Side(border_style="thin", color="000000"),
+        right=Side(border_style="thin", color="000000"),
+        top=Side(border_style="thin", color="000000"),
+        bottom=Side(border_style="thin", color="000000")
+    )
+    
+    # Definir colores de fondo para alternar en los títulos
+    fill_gray_light = PatternFill(start_color="D3D3D3", end_color="D3D3D3", fill_type="solid")
+    fill_gray_dark = PatternFill(start_color="A9A9A9", end_color="A9A9A9", fill_type="solid")
+    
+    # Desplazar la tabla para que comience en B2
+    start_col = 2  # Comenzar en la columna B
+    start_row = 2  # Comenzar en la fila 2
+    
+    # Definir encabezados
+    headers = ["ID Producto", "Nombre", "Stock", "Precio", "Categoría"]
+    for col_num, header in enumerate(headers, start_col):
+        cell = ws.cell(row=start_row, column=col_num, value=header)
+        cell.font = header_font
+        cell.alignment = alignment_center
+        cell.border = thin_border  # Aplicar borde al encabezado
+        # Alternar colores
+        cell.fill = fill_gray_light if col_num % 2 == 0 else fill_gray_dark
+    
+    # Añadir datos de productos
+    for row_num, producto in enumerate(productos, start_row + 1):
+        cells = [
+            ws.cell(row=row_num, column=start_col, value=producto.codProducto),
+            ws.cell(row=row_num, column=start_col + 1, value=producto.nombreP),
+            ws.cell(row=row_num, column=start_col + 2, value=producto.stock),
+            ws.cell(row=row_num, column=start_col + 3, value=producto.precio),
+            ws.cell(row=row_num, column=start_col + 4, value=producto.categoria.nombreCa if hasattr(producto.categoria, 'nombreCa') else '')
+        ]
+        for cell in cells:
+            cell.alignment = alignment_center
+            cell.border = thin_border  # Aplicar borde a las celdas de datos
+            cell.font = Font(size=12)  # Establecer tamaño de fuente en 12
+    
+    # Ajustar el ancho de las columnas basado en el contenido
+    for col in ws.iter_cols(min_col=start_col, max_col=start_col + len(headers) - 1):
+        max_length = 0
+        column = col[0].column_letter  # Obtener el nombre de la columna
+        for cell in col:
+            try:
+                if len(str(cell.value)) > max_length:
+                    max_length = len(str(cell.value))
+            except:
+                pass
+        adjusted_width = (max_length + 2) * 1.2  # Ajuste adicional del ancho
+        ws.column_dimensions[column].width = adjusted_width
+    
+    # Crear respuesta HTTP
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename=productos.xlsx'
+    wb.save(response)
+    return response
+
+def buscar_productos(request):
+    query = request.GET.get('q')
+    if query:
+        productos = Producto.objects.filter(nombreP__icontains=query)
+    else:
+        productos = Producto.objects.all()
+    
+    context = {
+        'productos': productos
+    }
+    return render(request, 'core/listaproducto.html', context)
 
 def editarproducto(request, id_producto):
     producto = Producto.objects.get(codProducto = id_producto)
