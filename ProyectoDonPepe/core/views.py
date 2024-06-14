@@ -305,12 +305,31 @@ def borrarperfil(request, rut):
     messages.success(request, 'Perfil eliminado correctamente.')
     return redirect('listausuarios')
 
-@login_required 
+@login_required
 def productos(request):
+    nombre = request.GET.get('nombre', '')
+    categoria_id = request.GET.get('categoria', '')
+    precio_rango = request.GET.get('precio', '')
+    
     productoListado = Producto.objects.all()
+    
+    if nombre:
+        productoListado = productoListado.filter(nombreP__icontains=nombre)
+    
+    if categoria_id:
+        productoListado = productoListado.filter(categoria_id=categoria_id)
+    
+    if precio_rango:
+        min_precio, max_precio = map(int, precio_rango.split('-'))
+        productoListado = productoListado.filter(precio__gte=min_precio, precio__lte=max_precio)
+    
+    categorias = Categoria.objects.all()
+    
     contexto = {
-        "productos": productoListado
-    }   
+        "productos": productoListado,
+        "categorias": categorias,
+    }
+    
     return render(request, 'core/productos.html', contexto)
 
 def detalleproducto(request, pk):
