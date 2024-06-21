@@ -3,7 +3,7 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
-from .models import Usuario, Producto, Venta, Categoria, DetalleVenta, Rol, Region, Comuna, Direccion
+from .models import ItemCarrito, ProductoCarrito, Usuario, Producto, Venta, Categoria, DetalleVenta, Rol, Region, Comuna, Direccion
 import openpyxl
 from openpyxl.styles import Alignment, Font, Border, Side, PatternFill
 from openpyxl.utils import get_column_letter
@@ -332,22 +332,62 @@ def productos(request):
     
     return render(request, 'core/productos.html', contexto)
 
-def detalleproducto(request, pk):
-    producto = get_object_or_404(Producto, pk=pk)
-    return render (request, 'core/detalleproducto.html', {'producto': producto})
-
 def quienessomos(request):
     return render(request, 'core/quienessomos.html')
 
 def galeria(request):
     return render(request, 'core/galeria.html')
 
+def detalleproducto(request, pk):
+    producto = get_object_or_404(Producto, pk=pk)
+    carrito = ItemCarrito.objects.filter(usuario=request.user)
+    total = sum(item.producto.precio * item.cantidad for item in carrito)
+
+    context = {
+        'producto': producto,
+        'carrito': carrito,
+        'total': total,
+    }
+
+    return render(request, 'core/detalleproducto.html', context)
+
+@login_required
+def agregar_al_carrito(request, producto_cod):
+    producto = get_object_or_404(Producto, codProducto=producto_cod)
+    
+    if request.method == 'POST':
+        cantidad = int(request.POST.get('cantidad', 1))  # Obtener la cantidad del formulario, por defecto 1 si no se proporciona
+
+        # Obtener o crear el ítem en el carrito
+        carrito, created = ItemCarrito.objects.get_or_create(usuario=request.user, producto=producto)
+
+        if not created:
+            carrito.cantidad = cantidad  # Establecer la cantidad seleccionada
+        else:
+            carrito.cantidad += cantidad  # Sumar la cantidad seleccionada
+
+        carrito.save()
+        messages.success(request, 'Producto añadido al carrito correctamente.')
+
+    return redirect('detalleproducto', pk=producto.pk)
 
 
+@login_required
+def carrito(request):
+    carrito = ItemCarrito.objects.filter(usuario=request.user)
+    total = sum(item.producto.precio * item.cantidad for item in carrito)
 
+    context = {
+        'carrito': carrito,
+        'total': total,
+    }
+    return render(request, 'core/carrito.html', context)
 
-
-
+@login_required
+def eliminar_del_carrito(request, carrito_id):
+    item = get_object_or_404(ItemCarrito, pk=carrito_id)
+    item.delete()
+    return redirect('carrito')
 
 
 

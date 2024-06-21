@@ -101,7 +101,7 @@
     
 <div class="container-fluid">
     <div class="row">
-        <div class="col-md-3" style="width: 23%;">
+        <div class="col-md-3" style="width: 21%;">
             <div class="card">
                 <div class="card-header">
                     <h5>Filtrar</h5>
@@ -125,8 +125,8 @@
                         </div>
                         <div class="mb-3">
                             <label for="precio" class="form-label">Precio</label>
-                            <select class="form-select" style="font-size: 12px;" id="precio" name="precio">
-                                <option value="" >Seleccionar un rango de precio...</option>
+                            <select class="form-select" style="font-size: 14px;" id="precio" name="precio">
+                                <option value="" >Selecciona un rango de precio</option>
                                 <option value="1-19999" {% if request.GET.precio == '1-19999' %} selected {% endif %}>$1.000 - $19.999</option>
                                 <option value="20000-39999" {% if request.GET.precio == '20000-39999' %} selected {% endif %}>$20.000 - $39.999</option>
                                 <option value="40000-79999" {% if request.GET.precio == '40000-79999' %} selected {% endif %}>$40.000 - $79.999</option>
@@ -164,7 +164,7 @@
 
     
    <!-- Sección de información de ubicación y contacto -->
-   <div class="container-fluid py-5" style="background-color: #fdfde3; color: #e4ab00; margin-top: 30px;">
+   <div class="container-fluid py-5" style="background-color: #fdfde3; color: #e4ab00; margin-top: 50px;">
     <div class="container">
         <div class="row">
             <div class="col-md-6">
@@ -199,5 +199,6 @@
         contenido.classList.toggle('show');
     }
 </script>
+
 </body>
 </html>

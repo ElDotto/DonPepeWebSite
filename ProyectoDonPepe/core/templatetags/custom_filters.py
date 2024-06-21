@@ -9,3 +9,10 @@ def format_clp(value):
         return "${:,.0f}".format(value)
     except (ValueError, TypeError):
         return value
+
+@register.filter
+def multiplicar(value, arg):
+    try:
+        return value * arg
+    except (TypeError, ValueError):
+        return 0
