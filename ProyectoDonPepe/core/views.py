@@ -10,8 +10,24 @@ from openpyxl.utils import get_column_letter
 from django.http import HttpResponse
 
 # Create your views here.
+
 def inicio(request):
-    return render(request, 'core/inicio.html')
+    carrito = []
+    total = 0
+    carrito_count = 0
+    
+    if request.user.is_authenticated:
+        carrito = ItemCarrito.objects.filter(usuario=request.user)
+        total = sum(item.producto.precio * item.cantidad for item in carrito)
+        carrito_count = sum(item.cantidad for item in carrito)
+    
+    contexto = {
+        'carrito': carrito,
+        'total': total,
+        'carrito_count': carrito_count,
+    }
+    
+    return render(request, 'core/inicio.html', contexto)
 
 def register(request):
     if request.user.is_authenticated:
@@ -324,12 +340,16 @@ def productos(request):
         productoListado = productoListado.filter(precio__gte=min_precio, precio__lte=max_precio)
     
     categorias = Categoria.objects.all()
-    
+    carrito = ItemCarrito.objects.filter(usuario=request.user)
+    total = sum(item.producto.precio * item.cantidad for item in carrito)
+    carrito_count = sum(item.cantidad for item in carrito)
     contexto = {
         "productos": productoListado,
         "categorias": categorias,
-    }
-    
+        'carrito': carrito,
+        'total': total,
+        'carrito_count': carrito_count,
+    }    
     return render(request, 'core/productos.html', contexto)
 
 def quienessomos(request):
@@ -342,14 +362,17 @@ def detalleproducto(request, pk):
     producto = get_object_or_404(Producto, pk=pk)
     carrito = ItemCarrito.objects.filter(usuario=request.user)
     total = sum(item.producto.precio * item.cantidad for item in carrito)
+    carrito_count = sum(item.cantidad for item in carrito)
 
     context = {
         'producto': producto,
         'carrito': carrito,
         'total': total,
+        'carrito_count': carrito_count,
     }
 
     return render(request, 'core/detalleproducto.html', context)
+
 
 @login_required
 def agregar_al_carrito(request, producto_cod):
@@ -361,7 +384,7 @@ def agregar_al_carrito(request, producto_cod):
         # Obtener o crear el ítem en el carrito
         carrito, created = ItemCarrito.objects.get_or_create(usuario=request.user, producto=producto)
 
-        if not created:
+        if created:
             carrito.cantidad = cantidad  # Establecer la cantidad seleccionada
         else:
             carrito.cantidad += cantidad  # Sumar la cantidad seleccionada
@@ -370,6 +393,7 @@ def agregar_al_carrito(request, producto_cod):
         messages.success(request, 'Producto añadido al carrito correctamente.')
 
     return redirect('detalleproducto', pk=producto.pk)
+
 
 
 @login_required
