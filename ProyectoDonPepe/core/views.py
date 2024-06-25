@@ -429,12 +429,38 @@ def carrito(request):
     carrito = ItemCarrito.objects.filter(usuario=request.user)
     total = sum(item.producto.precio * item.cantidad for item in carrito)
     carrito_count = sum(item.cantidad for item in carrito)
+
+    regiones = Region.objects.all()
+
+    # Obtener la región seleccionada, si existe
+    region_id = request.GET.get('region')
+    comunas = []
+    if region_id:
+        try:
+            region_seleccionada = Region.objects.get(idRegion=region_id)  # Ajuste aquí
+            comunas = Comuna.objects.filter(region=region_seleccionada)
+        except Region.DoesNotExist:
+            pass
+
     context = {
         'carrito': carrito,
         'total': total,
         'carrito_count': carrito_count,
+        'regiones': regiones,
+        'comunas': comunas,
+        'region_id': region_id,  # Esto es para mantener la región seleccionada en el formulario
     }
     return render(request, 'core/carrito.html', context)
+
+def comunas_por_region(request, region_id):
+    try:
+        region = Region.objects.get(idRegion=region_id)  # Ajuste aquí
+        comunas = Comuna.objects.filter(region=region)
+        data = [{'id': comuna.idComuna, 'nombreC': comuna.nombreC} for comuna in comunas]  # Ajuste aquí
+        return JsonResponse(data, safe=False)
+    except Region.DoesNotExist:
+        return JsonResponse([], safe=False)
+
 
 @login_required
 def eliminar_del_carrito(request, carrito_id):

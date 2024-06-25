@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import inicio, register, productos, quienessomos, galeria, login_user, cerrarsesion, editarperfil, actualizarperfil, administrador, agregar, ingresarproducto, listaproducto, listausuarios, borrarperfil, borrarproducto, editarproducto, actualizaproducto, detalleproducto, exportar_productos_excel, buscar_productos, carrito, agregar_al_carrito, eliminar_del_carrito, aumentar_cantidad, disminuir_cantidad
+from .views import inicio, register, productos, quienessomos, galeria, login_user, cerrarsesion, editarperfil, actualizarperfil, administrador, agregar, ingresarproducto, listaproducto, listausuarios, borrarperfil, borrarproducto, editarproducto, actualizaproducto, detalleproducto, exportar_productos_excel, buscar_productos, carrito, agregar_al_carrito, eliminar_del_carrito, aumentar_cantidad, disminuir_cantidad, comunas_por_region
 
 urlpatterns = [
     path('', inicio, name="inicio"),
@@ -28,4 +28,5 @@ urlpatterns = [
     path('carrito/', carrito, name='carrito'),
     path('aumentar_cantidad/<str:producto_cod>/', aumentar_cantidad, name='aumentar_cantidad'),
     path('disminuir_cantidad/<str:producto_cod>/', disminuir_cantidad, name='disminuir_cantidad'),
+    path('api/comunas/<int:region_id>/', comunas_por_region, name='comunas_por_region'),
 ] 
