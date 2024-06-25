@@ -7,7 +7,7 @@ from .models import ItemCarrito, ProductoCarrito, Usuario, Producto, Venta, Cate
 import openpyxl
 from openpyxl.styles import Alignment, Font, Border, Side, PatternFill
 from openpyxl.utils import get_column_letter
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 
 # Create your views here.
 
@@ -394,16 +394,45 @@ def agregar_al_carrito(request, producto_cod):
 
     return redirect('detalleproducto', pk=producto.pk)
 
+@login_required
+def aumentar_cantidad(request, producto_cod):
+    producto = get_object_or_404(Producto, codProducto=producto_cod)
+    
+    if request.method == 'POST':
+        carrito, created = ItemCarrito.objects.get_or_create(usuario=request.user, producto=producto)
+        carrito.cantidad += 1
+        carrito.save()
+        messages.success(request, 'Cantidad aumentada correctamente.')
+    
+    # Redireccionar a la misma página o a donde corresponda después del aumento
+    return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
 
+@login_required
+def disminuir_cantidad(request, producto_cod):
+    producto = get_object_or_404(Producto, codProducto=producto_cod)
+    
+    if request.method == 'POST':
+        carrito = get_object_or_404(ItemCarrito, usuario=request.user, producto=producto)
+
+        if carrito.cantidad > 1:
+            carrito.cantidad -= 1
+            carrito.save()
+            messages.success(request, 'Cantidad disminuida correctamente.')
+        else:
+            messages.warning(request, 'La cantidad no puede ser menor que 1. (PUEDES ELIMINAR EL PRODUCTO DEL CARRITO)')
+    
+    # Redireccionar a la misma página o a donde corresponda después de la disminución
+    return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
 
 @login_required
 def carrito(request):
     carrito = ItemCarrito.objects.filter(usuario=request.user)
     total = sum(item.producto.precio * item.cantidad for item in carrito)
-
+    carrito_count = sum(item.cantidad for item in carrito)
     context = {
         'carrito': carrito,
         'total': total,
+        'carrito_count': carrito_count,
     }
     return render(request, 'core/carrito.html', context)
 

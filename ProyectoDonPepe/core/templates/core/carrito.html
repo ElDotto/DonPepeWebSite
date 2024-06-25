@@ -193,42 +193,53 @@
     {% endfor %}
     {% endif %}
 
-    <div class="container mt-5">
-        <div style="text-align: center;">
-            <h2>Carrito de Compras</h2>
+    <div style="width: 70%; margin-left: 20px;">
+        <div style="text-align: left; margin-left: 20px; font-weight: 500; width: 95%;">
+            <h8>Carrito de Compras <i class="bi bi-cart4"></i></h8>
+        </div>
+        <br>
+
+        <div class="container">
+            {% for item in carrito %}
+            <div id="cart-item-{{ item.id }}" class="cart-item" data-id="{{ item.id }}" data-price="{{ item.producto.precio }}" style="display: flex; align-items: center; margin-bottom: 10px;  border: 1px solid rgba(0, 0, 0, 0.250); border-radius: 5px;">
+                <img src="{{ item.producto.foto.url }}" style=" margin-left: 10px; max-width: 110px; height: 110px; object-fit: cover;">
+                <div style="margin-left: 10px; flex-grow: 1;">
+                    <strong>{{ item.producto.nombreP }}</strong>
+                </div>
+                <div style="margin-left: 20px;">
+                    <span>{{ item.producto.precio | format_clp }}</span>
+                </div>
+                <div style="margin-left: 20px; display: flex; align-items: center;">
+                    <form action="{% url 'aumentar_cantidad' item.producto.codProducto %}" method="post" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-secondary btn-sm">+</button>
+                    </form>
+                    <p type="number" class="quantity" min="1" 
+                    style="width: 50px; text-align: center; display: block; margin: 0 auto; border: 1px solid rgba(0, 0, 0, 0.200);" readonly>{{ item.cantidad }}</p>
+             
+                    <form action="{% url 'disminuir_cantidad' item.producto.codProducto %}" method="post" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-secondary btn-sm">-</button>
+                    </form>
+                </div>
+                <div style="margin-left: 20px;">
+                    <span class="total">{{ item.producto.precio|multiplicar:item.cantidad|format_clp }}</span>
+                </div>
+                <div style="margin-left: 20px;">
+                    <a href="{% url 'eliminar_del_carrito' item.id %}" class="btn btn-danger btn-sm" style="margin-right: 10px;">Eliminar</a>
+                </div>
+            </div>
+            {% endfor %}
+            <div style="font-size: 20px; font-weight: 500; text-transform: uppercase; text-align: center;">
+                <p style="font-weight: 600;">Subtotal: {{ total |format_clp }}</p>
+            </div>
+        </div>
+        
+        <div style="text-align: center; ">
+            <a href="#" class="btn btn-success" style="margin-inline: 5px;">Realizar Compra</a>
+            <a href="{% url 'productos' %}" class="btn btn-secondary" style="margin-inline: 5px;">Seguir Comprando</a>
         </div>
         <br><br>
-        <table class="table" style="border-color: rgba(0, 0, 0, 0);">
-            <thead style="text-align: center;">
-                <tr>
-                    <th>Producto</th>
-                    <th>Precio Unitario</th>
-                    <th>Cantidad</th>
-                    <th>Total</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody style="text-align: center;">
-                {% for item in carrito %}
-                <tr>
-                    <td>{{ item.producto.nombreP }}</td>
-                    <td>{{ item.producto.precio |format_clp }}</td>
-                    <td>{{ item.cantidad }}</td>
-                    <td>{{ item.producto.precio|multiplicar:item.cantidad|format_clp }}</td>
-                    <td>
-                        <a href="{% url 'eliminar_del_carrito' item.id %}" class="btn btn-danger btn-sm">Eliminar</a>
-                    </td>
-                </tr>
-                {% endfor %}
-                <tr>
-                    <td colspan="3" class="text-end" style="font-size: 20px; font-weight: 500;">Subtotal:</td>
-                    <td style="font-weight: 500;">{{ total |format_clp }}</td>
-                    <td></td>
-                </tr>
-            </tbody>
-        </table>
-        <a href="{% url 'productos' %}" class="btn btn-secondary">Seguir Comprando</a>
-        <a href="#" class="btn btn-success">Realizar Compra</a>
     </div>
 
     <!-- Scripts de Bootstrap y Font Awesome -->
@@ -237,6 +248,25 @@
         crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll('.cart-item').forEach(function(cartItem) {
+                var quantityInput = cartItem.querySelector('.quantity');
+
+                quantityInput.addEventListener('change', function () {
+                    updateTotal(quantityInput);
+                });
+            });
+        });
+
+        function updateTotal(element) {
+            var cartItem = element.closest('.cart-item');
+            var price = parseFloat(cartItem.dataset.price);
+            var quantity = parseInt(element.value);
+            var total = quantity * price;
+            cartItem.querySelector('.total').innerText = total.toLocaleString('es-CL', {style: 'currency', currency: 'CLP'});
+        }
+    </script>
 
 </body>
 
