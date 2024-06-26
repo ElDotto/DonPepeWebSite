@@ -1,4 +1,3 @@
-
 from django.db import models
 from django.contrib.auth.models import User
 from django.urls import reverse
@@ -11,57 +10,75 @@ class Rol(models.Model):
         return self.nombreRol
 
 class Usuario(models.Model):
-
-    rut                 = models.CharField(primary_key=True,max_length=10)
-    nombre              = models.CharField(max_length=20)
-    apellido            = models.CharField(max_length=20)
-    telefono            = models.CharField(max_length=9)
-    correo               = models.EmailField(unique=True,max_length=100, blank=True, null=True)
-    clave          = models.CharField(max_length=30)
-    rol = models.ForeignKey(Rol,on_delete=models.CASCADE)
-    
+    rut = models.CharField(primary_key=True, max_length=10)
+    nombre = models.CharField(max_length=20)
+    apellido = models.CharField(max_length=20)
+    telefono = models.CharField(max_length=9)
+    correo = models.EmailField(unique=True, max_length=100, blank=True, null=True)
+    clave = models.CharField(max_length=30)
+    rol = models.ForeignKey(Rol, on_delete=models.CASCADE)
 
     def __str__(self) -> str:
-        return self.nombre  
+        return self.correo  
 
 class Region(models.Model):
-    idRegion =models.AutoField(primary_key=True)
+    idRegion = models.AutoField(primary_key=True)
     nombreR = models.CharField(max_length=100)
 
     def __str__(self) -> str:
         return self.nombreR
 
 class Comuna(models.Model):
-    idComuna =models.AutoField(primary_key=True)
+    idComuna = models.AutoField(primary_key=True)
     nombreC = models.CharField(max_length=100)
-    region = models.ForeignKey(Region,on_delete=models.CASCADE)
+    region = models.ForeignKey(Region, on_delete=models.CASCADE)
 
     def __str__(self) -> str:
         return self.nombreC
-
+    
 class Direccion(models.Model):
-    idDireccion =models.AutoField(primary_key=True)
-    comuna = models.ForeignKey(Comuna,on_delete=models.CASCADE)
-    usuario = models.ForeignKey(Usuario,on_delete=models.CASCADE)
-    calle = models.CharField(max_length=20)
-    numero = models.IntegerField()
+    idDireccion = models.AutoField(primary_key=True)
+    calle = models.CharField(max_length=100)
+    numero = models.CharField(max_length=10)
+    comuna = models.ForeignKey('Comuna', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.calle} {self.numero}, {self.comuna}"
+
+    def direccion_completa(self):
+        return f"{self.calle} {self.numero}, {self.comuna}"
+
+class TipoDespacho(models.Model):
+    idDespacho = models.IntegerField(primary_key=True)
+    nombreDespacho = models.CharField(max_length=100)
+    
+    def __str__(self) -> str:
+        return str(self.nombreDespacho)
+    
+class Estado(models.Model):
+    id_estado = models.IntegerField(primary_key=True)
+    nombreEs = models.CharField(max_length=50)
 
     def __str__(self) -> str:
-        return self.calle
+        return self.nombreEs
 
 class Venta(models.Model):
     codVenta = models.AutoField(primary_key=True)
-    usuario = models.ForeignKey(Usuario,on_delete=models.CASCADE)
-    fVenta = models.DateField(verbose_name='Fecha de la venta')
-    fEntrega = models.DateField(verbose_name='Fecha de la entrega')
-    estadoP = models.IntegerField(verbose_name='estado del producto')
-    direccion = models.ForeignKey(Direccion, on_delete=models.CASCADE)
+    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    estadoP = models.ForeignKey(Estado, on_delete=models.CASCADE)
+    tipodespacho = models.ForeignKey(TipoDespacho, on_delete=models.CASCADE)
     total = models.IntegerField()
-    carrito = models.IntegerField()
-    status = models.IntegerField()
+    direccion = models.OneToOneField(Direccion, on_delete=models.CASCADE, null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.codVenta}"
+
+
+
+
 
 class Categoria(models.Model):
-    idCategoria = models.AutoField(primary_key=True)
+    idCategoria = models.IntegerField(primary_key=True)
     nombreCa = models.CharField(max_length=50)
 
     def __str__(self) -> str:
@@ -84,11 +101,10 @@ class Producto(models.Model):
 
 class DetalleVenta(models.Model):
     idDetalle = models.AutoField(primary_key=True)
-    venta = models.ForeignKey(Venta,on_delete=models.CASCADE)
+    venta = models.ForeignKey(Venta, on_delete=models.CASCADE)
     producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
     cantidad = models.IntegerField()
     subtotal = models.IntegerField()
-
 
 class ProductoCarrito(models.Model):
     nombre = models.CharField(max_length=100)

@@ -270,7 +270,8 @@
                         <div class="container">
                             <div class="row">
                                 <div class="col-md-6">
-                                    <button class="btn btn-outline-warning btn-block py-4 px-4 mx-2 btn-despacho-domicilio active"
+                                    <button
+                                        class="btn btn-outline-warning btn-block py-4 px-4 mx-2 btn-despacho-domicilio active"
                                         style="border: 0px; font-weight: 700; border-radius: 8px; width: 80%;"
                                         onclick="showDespachoDomicilio()">Despacho a domicilio</button>
                                 </div>
@@ -281,130 +282,122 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                     </div>
                     <div class="card-body">
-                        <!-- Columna para mostrar detalles de entrega seleccionada -->
-                         <form action="">
-                        <div id="retiroTienda" style="display: none; margin-top: 20px; text-align: left; margin-inline: 10px;">
-                            <h5>Retiro en tienda</h5>
-                            <div class="hr">
-                                <hr>
-                            </div>
-                            <p>Tienda: Temuco</p>
-                            <p>Dirección: Zenteno 524, Temuco</p>
-                            <div class="hr">
-                                <hr>
-                            </div>
-                            <div class="container">
-                                <div class="row">
-                                    <div class="col-md-6"
-                                        style="text-align: left; font-size: 20px; font-weight: 700;">
-                                        <p>Total: </p>
-                                    </div>
-                                    <div class="col-md-6"
-                                        style="text-align: right; font-size: 20px; font-weight: 700;">
-                                        <p>{{ total | format_clp }}</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div style="text-align: center;">
-                                <button type="submit" class="btn btn-warning"
-                                    style="width: 100%; font-weight: 700;">Siguiente</button>
-                            </div>
-                        </div>
-                        </form>
-
-                        <!-- Columna para mostrar detalles de entrega seleccionada -->
-                        <form>
-                            <div id="despachoDomicilio"
-                                style="display: none; margin-top: 20px; text-align: left; margin-inline: 10px;">
-                                <h5>Despacho a domicilio</h5>
+                        <!-- Formulario para retiro en tienda -->
+                        <form method="post" action="{% url 'crear_venta' %}">
+                            {% csrf_token %}
+                            <div id="retiroTienda" style="display: none; margin-top: 20px; text-align: left; margin-inline: 10px;">
+                                <h5>Retiro en tienda</h5>
                                 <div class="hr">
                                     <hr>
                                 </div>
-
-                                <div class="mb-3">
-                                    <label for="direccionEnvio">Dirección de envío:</label>
-                                    <input type="text" class="form-control" id="direccionEnvio" name="direccionEnvio">
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="region">Región:</label>
-                                    <select class="form-control" id="region" name="region">
-                                        <option value="">Selecciona una región</option>
-                                        {% for region in regiones %}
-                                            <option value="{{ region.idRegion }}" {% if region.idRegion == region_id %}selected{% endif %}>{{ region.nombreR }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                                
-                                <div class="mb-3">
-                                    <label for="comuna">Comuna:</label>
-                                    <select class="form-control" id="comuna" name="comuna">
-                                        <option value="">Primero selecciona una región</option>
-                                        {% for comuna in comunas %}
-                                            <option value="{{ comuna.idComuna }}">{{ comuna.nombreC }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="direccionEnvio">Calle</label>
-                                    <input type="text" class="form-control" id="direccionEnvio" name="direccionEnvio">
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="direccionEnvio">Número</label>
-                                    <input type="text" class="form-control" id="direccionEnvio" name="direccionEnvio">
-                                </div>
-
-
-
-
-
-                                <h5>¿Quién recibirá el pedido?</h5>
-                                <div class="mb-3">
-                                    <label for="direccionEnvio">Nombre Completo:</label>
-                                    <input type="text" class="form-control" id="direccionEnvio" name="direccionEnvio">
-                                </div>
-                                <div class="mb-3">
-                                    <label for="direccionEnvio">RUT:</label>
-                                    <input type="text" class="form-control" id="direccionEnvio" name="direccionEnvio">
-                                </div>
-                                <div class="mb-3">
-                                    <label for="direccionEnvio">Télefono:</label>
-                                    <input type="text" class="form-control" id="direccionEnvio" name="direccionEnvio">
-                                </div>
+                                <p>Tienda: Temuco</p>
+                                <p>Dirección: Zenteno 524, Temuco</p>
                                 <div class="hr">
                                     <hr>
                                 </div>
                                 <div class="container">
                                     <div class="row">
-                                        <div class="col-md-6"
-                                            style="text-align: left; font-size: 20px; font-weight: 700;">
+                                        <div class="col-md-6" style="text-align: left; font-size: 20px; font-weight: 700;">
                                             <p>Total: </p>
                                         </div>
-                                        <div class="col-md-6"
-                                            style="text-align: right; font-size: 20px; font-weight: 700;">
+                                        <div class="col-md-6" style="text-align: right; font-size: 20px; font-weight: 700;">
                                             <p>{{ total | format_clp }}</p>
                                         </div>
                                     </div>
                                 </div>
-
+                                <input type="hidden" name="tipo_entrega" value="tienda">
+                                <input type="hidden" name="total" value="{{ total }}">
+                                <input type="hidden" name="carrito" value="{{ carrito_count }}">
                                 <div style="text-align: center;">
-                                    <button type="submit" class="btn btn-warning"
-                                        style="width: 100%; font-weight: 700;">Siguiente</button>
+                                    <button type="submit" class="btn btn-warning" style="width: 100%; font-weight: 700;">Siguiente</button>
+                                </div>
+                            </div>
+                        </form>
+                    
+                        <!-- Formulario para despacho a domicilio -->
+                        <form method="post" action="{% url 'crear_venta' %}">
+                            {% csrf_token %}
+                            <div id="despachoDomicilio" style="display: none; margin-top: 20px; text-align: left; margin-inline: 10px;">
+                                <h5>Despacho a domicilio</h5>
+                                <div class="hr">
+                                    <hr>
+                                </div>
+                    
+                                <div class="mb-3">
+                                    <label for="region">Región:</label>
+                                    <select class="form-select" id="region" name="region">
+                                        <option value="">Selecciona una región</option>
+                                        {% for region in regiones %}
+                                        <option value="{{ region.idRegion }}" {% if region.idRegion == region_id %}selected{% endif %}>
+                                            {{ region.nombreR }}
+                                        </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                    
+                                <div class="mb-3">
+                                    <label for="comuna">Comuna:</label>
+                                    <select class="form-select" id="comuna" name="comuna">
+                                        <option value="">Primero selecciona una región</option>
+                                        {% for comuna in comunas %}
+                                        <option value="{{ comuna.idComuna }}">{{ comuna.nombreC }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                    
+                                <div class="mb-3">
+                                    <label for="calle">Calle:</label>
+                                    <input type="text" class="form-control" id="calle" name="calle">
+                                </div>
+                    
+                                <div class="mb-3">
+                                    <label for="numero">Número:</label>
+                                    <input type="text" class="form-control" id="numero" name="numero">
+                                </div>
+                    
+                                <input type="hidden" name="tipo_entrega" value="domicilio">
+                                <input type="hidden" name="total" value="{{ total }}">
+                                <input type="hidden" name="carrito" value="{{ carrito_count }}">
+                    
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-md-6" style="text-align: left; font-size: 20px; font-weight: 700;">
+                                            <p>Total: </p>
+                                        </div>
+                                        <div class="col-md-6" style="text-align: right; font-size: 20px; font-weight: 700;">
+                                            <p>{{ total | format_clp }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="text-align: center;">
+                                    <button type="submit" class="btn btn-warning" style="width: 100%; font-weight: 700;">Siguiente</button>
                                 </div>
                             </div>
                         </form>
                     </div>
+                    
                     <br>
                 </div>
             </div>
         </div>
     </div>
+    </div>
+    <div class="modal fade" id="detallesVentaModal" tabindex="-1" aria-labelledby="detallesVentaModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="detallesVentaModalLabel">Detalles de la Venta</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Aquí se cargarán los detalles de la venta mediante AJAX -->
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Scripts de Bootstrap y Font Awesome -->

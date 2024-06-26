@@ -1,13 +1,15 @@
+from datetime import date
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
-from .models import ItemCarrito, ProductoCarrito, Usuario, Producto, Venta, Categoria, DetalleVenta, Rol, Region, Comuna, Direccion
+from .models import Direccion, ItemCarrito, ProductoCarrito, TipoDespacho, Usuario, Producto, Venta, Categoria, DetalleVenta, Rol, Region, Comuna
 import openpyxl
 from openpyxl.styles import Alignment, Font, Border, Side, PatternFill
 from openpyxl.utils import get_column_letter
 from django.http import HttpResponse, JsonResponse
+from django.template.loader import render_to_string
 
 # Create your views here.
 
@@ -468,6 +470,90 @@ def eliminar_del_carrito(request, carrito_id):
     item.delete()
     return redirect('carrito')
 
+@login_required
+def crear_venta(request):
+    if request.method == 'POST':
+        tipo_entrega = request.POST.get('tipo_entrega')
+        user = request.user
+        usuario = Usuario.objects.get(correo=user.username)
+        total = request.POST.get('total')
 
+        if tipo_entrega == 'tienda':
 
+            calle = 'Zenteno'
+            numero = 524
+            comuna = Comuna.objects.get(idComuna= 2)
+
+            nueva_direccion = Direccion(calle=calle, numero=numero, comuna=comuna)
+            
+            nueva_direccion.save()
+            tipo_despacho = TipoDespacho.objects.get(nombreDespacho='Tienda')
+            nueva_venta = Venta(usuario=usuario, estadoP=1, tipodespacho=tipo_despacho, total=total, direccion=nueva_direccion)
+            
+            nueva_venta.save()
+
+            # Crear detalles de venta para cada producto en el carrito
+            carrito_items = ItemCarrito.objects.filter(usuario=request.user)
+            for item in carrito_items:
+                detalle_venta = DetalleVenta(venta=nueva_venta, producto=item.producto, cantidad=item.cantidad, subtotal=item.producto.precio * item.cantidad)
+                detalle_venta.save()
+
+            # Limpiar el carrito después de completar la venta
+            carrito_items.delete()
+
+        elif tipo_entrega == 'domicilio':
+            comuna_id = request.POST.get('comuna')
+            calle = request.POST.get('calle')
+            numero = request.POST.get('numero')
+            comuna = Comuna.objects.get(idComuna=comuna_id)
+
+            # Crear la dirección para la venta
+            nueva_direccion = Direccion(calle=calle, numero=numero, comuna=comuna)
+            nueva_direccion.save()
+
+            # Obtener el tipo de despacho (a domicilio)
+            tipo_despacho = TipoDespacho.objects.get(nombreDespacho='Domicilio')
+
+            # Crear la venta con la dirección asociada
+            nueva_venta = Venta(usuario=usuario, estadoP=1, tipodespacho=tipo_despacho, total=total, direccion=nueva_direccion)
+            nueva_venta.save()
+
+            # Crear detalles de venta para cada producto en el carrito
+            carrito_items = ItemCarrito.objects.filter(usuario=request.user)
+            for item in carrito_items:
+                detalle_venta = DetalleVenta(venta=nueva_venta, producto=item.producto, cantidad=item.cantidad, subtotal=item.producto.precio * item.cantidad)
+                detalle_venta.save()
+
+            # Limpiar el carrito después de completar la venta
+            carrito_items.delete()
+
+        return redirect('carrito')
+
+    return redirect('carrito')
+
+def listaventas(request):
+    ventas_listado = Venta.objects.all()
+    contexto = {
+        "ventas": ventas_listado
+    }
+    return render(request, 'core/listaventas.html', contexto)
+
+def detalles_venta(request):
+    if request.method == 'GET' and 'venta_id' in request.GET:
+        venta_id = request.GET.get('venta_id')
+        detalles_venta = DetalleVenta.objects.filter(venta_id=venta_id)
+        detalles = []
+        for detalle in detalles_venta:
+            producto = detalle.producto
+            detalles.append({
+                'producto': detalle.producto.nombreP,
+                'imagen': producto.foto.url if producto.foto else '', 
+                'cantidad': detalle.cantidad,
+                'precio_unitario': detalle.producto.precio,
+                'subtotal': detalle.subtotal
+            })
+        return JsonResponse({'detalles_venta': detalles})
+    else:
+        return JsonResponse({'error': 'No se encontró la venta solicitada'}, status=400)
+    
 
