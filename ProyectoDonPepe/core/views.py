@@ -4,12 +4,11 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
-from .models import Direccion, ItemCarrito, ProductoCarrito, TipoDespacho, Usuario, Producto, Venta, Categoria, DetalleVenta, Rol, Region, Comuna
+from .models import Direccion, Estado, ItemCarrito, ProductoCarrito, TipoDespacho, Usuario, Producto, Venta, Categoria, DetalleVenta, Rol, Region, Comuna
 import openpyxl
 from openpyxl.styles import Alignment, Font, Border, Side, PatternFill
-from openpyxl.utils import get_column_letter
 from django.http import HttpResponse, JsonResponse
-from django.template.loader import render_to_string
+from django.views.decorators.http import require_POST
 
 # Create your views here.
 
@@ -555,5 +554,39 @@ def detalles_venta(request):
         return JsonResponse({'detalles_venta': detalles})
     else:
         return JsonResponse({'error': 'No se encontró la venta solicitada'}, status=400)
-    
+
+def cambiar_estado_venta(request):
+    if request.method == 'POST':
+        venta_id = request.POST.get('venta_id')
+        try:
+            venta = Venta.objects.get(pk=venta_id)
+            estado_actual = venta.estadoP
+            if estado_actual.id_estado == 1:  # ID for 'Venta Recibida'
+                nuevo_estado = Estado.objects.get(id_estado=2)  # ID for 'Salida del almacén'
+                clase_boton = 'btn-secondary'
+            elif estado_actual.id_estado == 2:  # ID for 'Salida del almacén'
+                nuevo_estado = Estado.objects.get(id_estado=3)  # ID for 'En camino'
+                clase_boton = 'btn-primary'
+            elif estado_actual.id_estado == 3:  # ID for 'En camino'
+                nuevo_estado = Estado.objects.get(id_estado=4)  # ID for 'Recibido'
+                clase_boton = 'btn-success'
+            else:
+                nuevo_estado = Estado.objects.get(id_estado=1)  # Ciclo de estado
+                clase_boton = 'btn-warning'
+
+            venta.estadoP = nuevo_estado
+            venta.save()
+
+            return JsonResponse({
+                'estado': {
+                    'id_estado': nuevo_estado.id_estado,
+                    'nombreEs': nuevo_estado.nombreEs,
+                    'claseBoton': clase_boton
+                }
+            })
+        except Venta.DoesNotExist:
+            return JsonResponse({'error': 'Venta no encontrada'}, status=404)
+
+    return JsonResponse({'error': 'Método no permitido'}, status=405)
+
 

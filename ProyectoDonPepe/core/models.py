@@ -58,6 +58,17 @@ class TipoDespacho(models.Model):
 class Estado(models.Model):
     id_estado = models.IntegerField(primary_key=True)
     nombreEs = models.CharField(max_length=50)
+    
+    def clase_boton(self):
+        if self.id_estado == 1:
+            return 'btn-warning'
+        elif self.id_estado == 2:
+            return 'btn-secondary'
+        elif self.id_estado == 3:
+            return 'btn-primary'
+        elif self.id_estado == 4:
+            return 'btn-success'
+        return 'btn-default'  # Fallback class
 
     def __str__(self) -> str:
         return self.nombreEs

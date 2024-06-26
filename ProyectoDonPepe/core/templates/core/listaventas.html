@@ -230,7 +230,11 @@
                             <tr style="text-align: center;">
                                 <td>{{ venta.codVenta }}</td>
                                 <td>{{ venta.usuario }}</td>
-                                <td class="warning">{{ venta.estadoP }}</td>
+                                <td>
+                                    <button type="button" class="btn estado-btn" data-venta-id="{{ venta.codVenta }}" data-estado-id="{{ venta.estadoP.id_estado }}">
+                                        {{ venta.estadoP.nombreEs }}
+                                    </button>
+                                </td>                                
                                 <td>{{ venta.direccion }}</td>
                                 <td>{{ venta.tipodespacho }}</td>
                                 <td>{{ venta.total | format_clp }}</td>
@@ -289,8 +293,79 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
     <!-- Librería para Lightbox -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.1/src/js.cookie.min.js"></script>
     <script>
         $(document).ready(function () {
+            // Obtener el token CSRF desde las cookies
+            var csrftoken = getCookie('csrftoken');
+
+            // Función para obtener el valor de una cookie por nombre
+            function getCookie(name) {
+                var cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    var cookies = document.cookie.split(';');
+                    for (var i = 0; i < cookies.length; i++) {
+                        var cookie = cookies[i].trim();
+                        // Buscar la cookie que comienza con 'csrftoken='
+                        if (cookie.substring(0, 10) === 'csrftoken=') {
+                            cookieValue = decodeURIComponent(cookie.substring(10));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+
+            // Inicializar estilos de los botones de estado
+            $('.estado-btn').each(function () {
+                var boton = $(this);
+                var estado_id = boton.data('estado-id');
+
+                if (estado_id === 1) {  // Venta Recibida
+                    boton.addClass('btn-warning');
+                } else if (estado_id === 2) {  // Salida del almacén
+                    boton.addClass('btn-secondary');
+                } else if (estado_id === 3) {  // En camino
+                    boton.addClass('btn-primary');
+                } else if (estado_id === 4) {  // Recibido
+                    boton.addClass('btn-success');
+                }
+            });
+
+            $('.estado-btn').click(function () {
+                var boton = $(this);
+                var venta_id = boton.data('venta-id');
+                var estado_id = boton.data('estado-id');
+
+                // Enviar la solicitud para cambiar el estado en la base de datos
+                $.ajax({
+                    url: '/cambiar_estado_venta/',
+                    type: 'POST',
+                    headers: { 'X-CSRFToken': csrftoken },  // Incluir el token CSRF en los headers
+                    data: {
+                        'venta_id': venta_id
+                    },
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data.estado) {
+                            var nuevo_estado = data.estado.nombreEs;
+                            var nueva_clase = data.estado.claseBoton;
+
+                            // Actualizar el botón con el nuevo estado y color
+                            boton.removeClass('btn-warning btn-secondary btn-primary btn-success')
+                                .addClass(nueva_clase)
+                                .text(nuevo_estado);
+
+                            // Actualizar el data-estado-id del botón
+                            boton.data('estado-id', data.estado.id_estado);
+                        }
+                    },
+                    error: function (error) {
+                        console.log('Error al cambiar estado:', error);
+                    }
+                });
+            });
+
             $('#searchInput').on('input', function () {
                 var searchText = $(this).val().toLowerCase().trim();
 
@@ -304,6 +379,7 @@
                     }
                 });
             });
+
             $('.ver-detalles').click(function () {
                 var venta_id = $(this).data('venta-id');
                 $.ajax({
@@ -321,7 +397,7 @@
                                 var subtotal = new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP' }).format(detalle.subtotal);
 
                                 var row = '<tr style="text-align: center;">' +
-                                    '<td><img src="' + detalle.imagen + '" alt="' + detalle.producto + '" style="max-width: 100px;"></td>' +
+                                    '<td><img src="' + detalle.imagen + '" alt="' + detalle.producto + '" style="max-width: 100px; height: 100px; object-fit: cover;"></td>' +
                                     '<td>' + detalle.producto + '</td>' +
                                     '<td>' + detalle.cantidad + '</td>' +
                                     '<td>' + precio_unitario + '</td>' +
@@ -339,9 +415,11 @@
                     }
                 });
             });
-
         });
+
     </script>
+    
+    
     
 
 
