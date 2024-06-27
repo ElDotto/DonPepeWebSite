@@ -1,0 +1,21 @@
+{% load static %}
+{% load custom_filters %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Producto Más Vendido</title>
+</head>
+<body>
+    <h1>Producto Más Vendido</h1>
+    {% if producto_mas_vendido %}
+        <p>Producto: {{ producto_mas_vendido.nombreP }}</p>
+        <p>Descripción: {{ producto_mas_vendido.descipcion }}</p>
+        <p>Precio: {{ producto_mas_vendido.precio }}</p>
+        <p>Cantidad Vendida: {{ producto_mas_vendido.total_vendido }}</p>
+    {% else %}
+        <p>No hay ventas registradas.</p>
+    {% endif %}
+</body>
+</html>

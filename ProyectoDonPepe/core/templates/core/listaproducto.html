@@ -210,6 +210,7 @@
                             <select id="searchType" class="form-select">
                                 <option value="nombre">Buscar por nombre</option>
                                 <option value="id">Buscar por ID</option>
+                                <option value="mas_vendido">Más Vendido</option>
                             </select>
                         </div>
                     </div>
@@ -228,6 +229,7 @@
                                 <th>Foto</th>
                                 <th>Precio</th>
                                 <th>Categoria</th>
+                                <th>Cantidad Vendida</th>
                             </tr>
                         </thead>
                         <tbody id="productosTable">
@@ -240,6 +242,7 @@
                                 <td><img src="{{ m.foto.url }}" alt="{{ m.nombreP }}" style="max-width: 150px;"></td>
                                 <td>{{ m.precio | format_clp }}</td>
                                 <td>{{ m.categoria }}</td>
+                                <td>{{ m.cantidad_vendida }}</td>
                                 <td>
                                     <a href="{% url 'editarproducto' m.codProducto  %}" class="btn btn-warning"><i class="bi bi-pencil-fill"></i></a>
                                     <a href="{% url 'borrarproducto' m.codProducto  %}" class="btn btn-danger"><i class="bi bi-trash"></i></a>
@@ -271,7 +274,6 @@
                 var searchType = $('#searchType').val();
                 $('#productosTable tr').each(function() {
                     var match = false;
-                    var lineText = $(this).text().toLowerCase();
                     if (searchType === 'nombre') {
                         var productName = $(this).find('td:nth-child(2)').text().toLowerCase();
                         if (productName.indexOf(searchText) !== -1) {
@@ -283,7 +285,7 @@
                             match = true;
                         }
                     }
-    
+        
                     if (match) {
                         $(this).show();
                     } else {
@@ -291,9 +293,26 @@
                     }
                 });
             });
-    
+        
             $('#searchType').on('change', function() {
-                $('#searchInput').trigger('input');
+                var searchType = $(this).val();
+                if (searchType === 'mas_vendido') {
+                    var maxSold = -1;
+                    var maxRow = null;
+                    $('#productosTable tr').each(function() {
+                        var soldAmount = parseInt($(this).find('td:nth-child(8)').text(), 10); // Ajusta el índice de columna según sea necesario
+                        if (soldAmount > maxSold) {
+                            maxSold = soldAmount;
+                            maxRow = $(this);
+                        }
+                    });
+                    $('#productosTable tr').hide();
+                    if (maxRow) {
+                        maxRow.show();
+                    }
+                } else {
+                    $('#searchInput').trigger('input');
+                }
             });
         });
     </script>
