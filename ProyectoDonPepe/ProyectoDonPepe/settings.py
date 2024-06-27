@@ -28,15 +28,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+MESSAGE_STORAGE= "django.contrib.messages.storage.cookie.CookieStorage"
 
-# Application definition
-MESSAGE_TAGS = {
-    messages.DEBUG: 'alert-dark',
-    messages.INFO: 'alert-info',
-    messages.SUCCESS: 'alert-success',
-    messages.WARNING: 'alert-warning',
-    messages.ERROR: 'alert-danger',
-}
 
 INSTALLED_APPS = [
     'django.contrib.admin',

@@ -132,19 +132,35 @@
         }
     </style>
 
-    {% if messages %}
-    {% for message in messages %}
-        {% if message.tags == 'success' %}
+    <script>
+        function eliminar_producto(id_producto) {
             Swal.fire({
-                icon: 'success',
-                title: '¡Éxito!',
-                text: '{{ message }}',
-                showConfirmButton: false,
-                timer: 3000
+                title: "¿Estás seguro que quieres eliminar el producto?",
+                text: "Esta acción no se puede deshacer!",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = "/borrarproducto/" + id_producto + "/";
+                }
             });
+        }
+    </script>
+        {% if messages %}
+        {% for m in messages %}
+        <script>
+            Swal.fire({
+                title: "Exito!",
+                text: "{{m}}",
+                icon: "success",
+                confirmButtonColor: "rgb(0, 123, 255)"
+            });
+        </script>
+        {% endfor %}
         {% endif %}
-    {% endfor %}
-    {% endif %}
+
 
     
 
@@ -254,7 +270,9 @@
                                 <td>{{ m.cantidad_vendida }}</td>
                                 <td>
                                     <a href="{% url 'editarproducto' m.codProducto  %}" class="btn btn-warning"><i class="bi bi-pencil-fill"></i></a>
-                                    <a href="{% url 'borrarproducto' m.codProducto  %}" class="btn btn-danger"><i class="bi bi-trash"></i></a>
+                                    <a href="#" onclick="eliminar_producto('{{ m.codProducto }}')" class="btn btn-danger">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
                                 </td>
                             </tr>
                             {% endfor %}
