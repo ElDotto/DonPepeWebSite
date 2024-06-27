@@ -299,6 +299,7 @@ def actualizaproducto(request):
             producto.foto = request.FILES['imagen']
 
         producto.save()
+        messages.success(request, 'Producto actualizado correctamente.')
         return redirect('listaproducto')
 
 
@@ -484,10 +485,10 @@ def crear_venta(request):
             comuna = Comuna.objects.get(idComuna= 2)
 
             nueva_direccion = Direccion(calle=calle, numero=numero, comuna=comuna)
-            
+            estado = Estado.objects.get(id_estado = 1)
             nueva_direccion.save()
             tipo_despacho = TipoDespacho.objects.get(nombreDespacho='Tienda')
-            nueva_venta = Venta(usuario=usuario, estadoP=1, tipodespacho=tipo_despacho, total=total, direccion=nueva_direccion)
+            nueva_venta = Venta(usuario=usuario, estadoP=estado, tipodespacho=tipo_despacho, total=total, direccion=nueva_direccion)
             
             nueva_venta.save()
 
@@ -514,7 +515,8 @@ def crear_venta(request):
             tipo_despacho = TipoDespacho.objects.get(nombreDespacho='Domicilio')
 
             # Crear la venta con la dirección asociada
-            nueva_venta = Venta(usuario=usuario, estadoP=1, tipodespacho=tipo_despacho, total=total, direccion=nueva_direccion)
+            estado = Estado.objects.get(id_estado = 1)
+            nueva_venta = Venta(usuario=usuario, estadoP=estado, tipodespacho=tipo_despacho, total=total, direccion=nueva_direccion)
             nueva_venta.save()
 
             # Crear detalles de venta para cada producto en el carrito
@@ -561,17 +563,17 @@ def cambiar_estado_venta(request):
         try:
             venta = Venta.objects.get(pk=venta_id)
             estado_actual = venta.estadoP
-            if estado_actual.id_estado == 1:  # ID for 'Venta Recibida'
-                nuevo_estado = Estado.objects.get(id_estado=2)  # ID for 'Salida del almacén'
+            if estado_actual.id_estado == 1: 
+                nuevo_estado = Estado.objects.get(id_estado=2)
                 clase_boton = 'btn-secondary'
-            elif estado_actual.id_estado == 2:  # ID for 'Salida del almacén'
-                nuevo_estado = Estado.objects.get(id_estado=3)  # ID for 'En camino'
+            elif estado_actual.id_estado == 2:
+                nuevo_estado = Estado.objects.get(id_estado=3)  
                 clase_boton = 'btn-primary'
-            elif estado_actual.id_estado == 3:  # ID for 'En camino'
-                nuevo_estado = Estado.objects.get(id_estado=4)  # ID for 'Recibido'
+            elif estado_actual.id_estado == 3:  
+                nuevo_estado = Estado.objects.get(id_estado=4)
                 clase_boton = 'btn-success'
             else:
-                nuevo_estado = Estado.objects.get(id_estado=1)  # Ciclo de estado
+                nuevo_estado = Estado.objects.get(id_estado=1)
                 clase_boton = 'btn-warning'
 
             venta.estadoP = nuevo_estado
