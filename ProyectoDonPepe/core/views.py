@@ -9,8 +9,7 @@ import openpyxl
 from openpyxl.styles import Alignment, Font, Border, Side, PatternFill
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.http import require_POST
-from django.db.models import Sum
-from django.shortcuts import render
+
 # Create your views here.
 
 def inicio(request):
@@ -180,20 +179,10 @@ def ingresarproducto(request):
 def listaproducto(request):
     productoListado = Producto.objects.all()
     categorias= Categoria.objects.all()
-    productos_vendidos = DetalleVenta.objects.values('producto_id').annotate(total_vendido=Sum('cantidad')).order_by('-total_vendido')
-
-    for producto in productoListado:
-        producto.cantidad_vendida = 0
-        for pv in productos_vendidos:
-            if pv['producto_id'] == producto.codProducto:
-                producto.cantidad_vendida = pv['total_vendido']
-                break
     contexto = {
         "categorias": categorias,
-        "productos": productoListado,
-    }
-    
-  
+        "productos": productoListado
+    }   
     return render(request, 'core/listaproducto.html', contexto)
 
 def exportar_productos_excel(request):
@@ -601,15 +590,4 @@ def cambiar_estado_venta(request):
 
     return JsonResponse({'error': 'Método no permitido'}, status=405)
 
-def most_sold_product(request):
-    # Anotar cada producto con la suma de las cantidades vendidas
-    productos = Producto.objects.annotate(total_vendido=Sum('detalleventa__cantidad')).order_by('-total_vendido')
-    
-    # Obtener el producto más vendido
-    producto_mas_vendido = productos.first() if productos.exists() else None
-    
-    context = {
-        'producto_mas_vendido': producto_mas_vendido
-    }
-    
-    return render(request, 'core/most_sold_product.html', context)
+
