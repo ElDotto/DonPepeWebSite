@@ -299,6 +299,7 @@ def actualizaproducto(request):
             producto.foto = request.FILES['imagen']
 
         producto.save()
+        messages.success(request, 'Producto actualizado correctamente.')
         return redirect('listaproducto')
 
 

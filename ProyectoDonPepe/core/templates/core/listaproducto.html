@@ -13,7 +13,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link type="text/css" rel="stylesheet" href="{% static 'css/inicio.css' %}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 </head>
 
@@ -132,6 +132,21 @@
         }
     </style>
 
+    {% if messages %}
+    {% for message in messages %}
+        {% if message.tags == 'success' %}
+            Swal.fire({
+                icon: 'success',
+                title: '¡Éxito!',
+                text: '{{ message }}',
+                showConfirmButton: false,
+                timer: 3000
+            });
+        {% endif %}
+    {% endfor %}
+    {% endif %}
+
+    
 
     <!-- Ventana emergente del carrito -->
     <div id="cartModal" class="modal fade" data-bs-backdrop="static">
@@ -184,14 +199,8 @@
 
 
 
-    {% if messages %}
-    {% for message in messages %}
-        <div class="alert {{ message.tags }} alert-dismissible fade show" style="margin-inline: 60px;" role="alert">
-            {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    {% endfor %}
-    {% endif %}
+    <div id="messages" data-messages="{% for message in messages %}{{ message|escapejs }}{% if not forloop.last %}|||{% endif %}{% endfor %}"></div>
+
     <div class="container my-5">
         <div class="row">
             <div class="card shadow-lg">
@@ -264,6 +273,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
     <!-- Librería para Lightbox -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
+
     <script>
         $(document).ready(function() {
             $('#searchInput').on('input', function() {
@@ -297,7 +307,22 @@
             });
         });
     </script>
-    
+        <script>
+            $(document).ready(function() {
+                var messages = $('#messages').data('messages');
+                if (messages) {
+                    var messageArray = messages.split('|||');
+                    messageArray.forEach(function(message) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: message,
+                            showConfirmButton: false,
+                            timer: 2000
+                        });
+                    });
+                }
+            });
+        </script>
     
     
 </body>
