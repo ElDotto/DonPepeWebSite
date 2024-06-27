@@ -199,12 +199,7 @@
 
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const form = document.getElementById('actualizarProductoForm');  // Reemplaza con tu formulario ID
-            
-            form.addEventListener('submit', function(event) {
-                event.preventDefault();  // Evita que el formulario se envíe por defecto
-                
+        function editarproducto(productId) {
                 Swal.fire({
                     title: '¿Estás seguro?',
                     text: '¿Quieres actualizar este producto?',
@@ -219,8 +214,7 @@
                         form.submit();  // Enviar el formulario para actualizar el producto
                     }
                 });
-            });
-        });
+        }
     </script>
 
     
