@@ -69,8 +69,8 @@ def register(request):
         
         return redirect('login_user')
 
-    return render(request, 'core/register.html')
-
+    else:
+        return render(request, 'core/register.html')
 def login_user(request):
     if request.user.is_authenticated:
         return redirect('inicio')
@@ -477,6 +477,7 @@ def comunas_por_region(request, region_id):
 def eliminar_del_carrito(request, carrito_id):
     item = get_object_or_404(ItemCarrito, pk=carrito_id)
     item.delete()
+    messages.success(request, 'Producto eliminado correctamente.')
     return redirect('carrito')
 
 @login_required

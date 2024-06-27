@@ -13,7 +13,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link type="text/css" rel="stylesheet" href="{% static 'css/inicio.css' %}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 </head>
 
@@ -186,12 +186,17 @@
 
     {% if messages %}
     {% for message in messages %}
-        <div class="alert {{ message.tags }} alert-dismissible fade show" style="margin-inline: 60px;" role="alert">
-            {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
+    <script>
+        Swal.fire({
+            title: "{% if message.tags == 'success' %}¡Éxito!{% else %}Error{% endif %}",
+            text: "{{ message }}",
+            icon: "{% if message.tags == 'success' %}success{% else %}error{% endif %}",
+            confirmButtonColor: "rgb(0, 123, 255)"
+        });
+    </script>
     {% endfor %}
     {% endif %}
+
     <div class="container my-5">
         <div class="row justify-content-center">
             <div class="col-md-8">
@@ -199,53 +204,52 @@
                     <div class="card-body">
                         <br>
                         <h1 class="text-center mb-4">Registro</h1>
-                        <form action="{% url 'register' %}" id="registrationForm" method="POST">
+                        <form action="{% url 'register' %}" id="registrationForm" method="POST" novalidate>
                             {% csrf_token %}
                             <div class="mb-3">
                                 <label for="rut" class="form-label">RUT:</label>
                                 <input type="text" class="form-control" id="rut" name="rut" placeholder="12345678-9" required>
                                 <div id="rutFeedback" class="invalid-feedback"></div>
                             </div>
-
+    
                             <div class="mb-3">
                                 <label for="nombre" class="form-label">Nombre:</label>
                                 <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Ingresa tu nombre" required>
                                 <div id="nombreFeedback" class="invalid-feedback"></div>
                             </div>
-
+    
                             <div class="mb-3">
                                 <label for="apellido" class="form-label">Apellido:</label>
                                 <input type="text" class="form-control" id="apellido" name="apellido" placeholder="Ingresa tu apellido" required>
                                 <div id="apellidoFeedback" class="invalid-feedback"></div>
                             </div>
-
-
+    
                             <div class="mb-3">
                                 <label for="telefono" class="form-label">Teléfono:</label>
                                 <input type="number" class="form-control" id="telefono" name="telefono" placeholder="Ingresa tu telefono" required>
                                 <div id="telefonoFeedback" class="invalid-feedback"></div>
                             </div>
-
+    
                             <div class="mb-3">
                                 <label for="email" class="form-label">Correo electrónico:</label>
                                 <input type="email" class="form-control" id="email" name="email" placeholder="Ingresa tu correo electronico" required>
                                 <div id="emailFeedback" class="invalid-feedback"></div>
                             </div>
-
+    
                             <div class="mb-3">
                                 <label for="password" class="form-label">Contraseña:</label>
                                 <input type="password" class="form-control" id="password" name="password" placeholder="Ingresa tu contraseña" required>
                                 <div id="passwordFeedback" class="invalid-feedback"></div>
                             </div>
-
+    
                             <div class="mb-3">
                                 <label for="confirmPassword" class="form-label">Confirmar Contraseña:</label>
                                 <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" placeholder="Confirma tu contraseña" required>
                                 <div id="confirmPasswordFeedback" class="invalid-feedback"></div>
                             </div>
-
+    
                             <div class="d-grid gap-2">
-                                <input id="submit" type="submit" class="btn btn-primary" value="Registrarse"></input>
+                                <input id="btn-register" type="submit" class="btn btn-primary" value="Registrarse" disabled></input>
                             </div>
                         </form>
                     </div>
@@ -253,117 +257,98 @@
             </div>
         </div>
     </div>
-
-   <!-- Sección de información de ubicación y contacto -->
-   <div class="container-fluid py-5" style="background-color: #fdfde3; color: #e4ab00;">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-6">
-                <h2>Ubicación</h2>
-                <i class="fas fa-map-marker-alt fa-2x"></i>
-                <!-- Aquí puedes incrustar el mapa interactivo -->
-                <p>Zenteno 524, Temuco</p>
-            </div>
-            <div class="col-md-6">
-                <h2>Contacto</h2>
-                <i class="fas fa-phone-alt fa-2x"></i>
-                <p>+56 45 221 3719</p>
-                <p>+56 9 5297 0113</p>
-                <i class="fas fa-envelope fa-2x"></i>
-                <p>contacto@alternadoresdonpepe.cl</p>
+    
+    <!-- Sección de información de ubicación y contacto -->
+    <div class="container-fluid py-5" style="background-color: #fdfde3; color: #e4ab00;">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h2>Ubicación</h2>
+                    <i class="fas fa-map-marker-alt fa-2x"></i>
+                    <!-- Aquí puedes incrustar el mapa interactivo -->
+                    <p>Zenteno 524, Temuco</p>
+                </div>
+                <div class="col-md-6">
+                    <h2>Contacto</h2>
+                    <i class="fas fa-phone-alt fa-2x"></i>
+                    <p>+56 45 221 3719</p>
+                    <p>+56 9 5297 0113</p>
+                    <i class="fas fa-envelope fa-2x"></i>
+                    <p>contacto@alternadoresdonpepe.cl</p>
+                </div>
             </div>
         </div>
     </div>
-</div>
-
+    
     <!-- Scripts de Bootstrap y Font Awesome -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
     <!-- Librería para Lightbox -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
-
+    
     <script>
         document.getElementById('registrationForm').addEventListener('submit', function(event) {
             if (!validarForm()) {
                 event.preventDefault();
             }
         });
-
+    
         function validarForm() {
-            let valid = true;
-            valid &= validarRut();
-            valid &= validarNombre();
-            valid &= validarApellido();
-            valid &= validarTelefono();
-            valid &= validarCorreo();
-            valid &= validarContraseña();
-            valid &= validarConfirmarContraseña();
+            var valid = true;
+    
+            // Validar cada campo y actualizar el estado de valid
+            valid = validarRut() &&
+                    validarNombre() &&
+                    validarApellido() &&
+                    validarTelefono() &&
+                    validarCorreo() &&
+                    validarContraseña() &&
+                    validarConfirmarContraseña();
+            
+            // Habilitar o deshabilitar el botón de registro según el estado de valid
+            document.getElementById('btn-register').disabled = !valid;
+    
             return valid;
         }
-
-        // Event listener para validar RUT cuando se sale del campo
-        document.getElementById('rut').addEventListener('blur', function() {
-            validarRut();
-        });
-        // Event listener para validar nombre cuando se sale del campo
-        document.getElementById('nombre').addEventListener('blur', function() {
-            validarNombre();
-        });
-
-        // Event listener para validar apellido cuando se sale del campo
-        document.getElementById('apellido').addEventListener('blur', function() {
-            validarApellido();
-        });
-
-        
-        // Event listener para validar telefono cuando se sale del campo
-        document.getElementById('telefono').addEventListener('blur', function() {
-            validarTelefono();
-        });
-        
-        // Event listener para validar correo cuando se sale del campo
-        document.getElementById('email').addEventListener('blur', function() {
-            validarCorreo();
-        });
-
-        // Event listener para validar contraseña cuando se sale del campo
-        document.getElementById('password').addEventListener('blur', function() {
-            validarContraseña();
-        });
-
-        // Event listener para validar confirmar contraseña cuando se sale del campo
-        document.getElementById('confirmPassword').addEventListener('blur', function() {
-            validarConfirmarContraseña();
-        });
-        
-
+    
+        // Event listeners para validar cada campo cuando se cambia
+        document.getElementById('rut').addEventListener('input', validarForm);
+        document.getElementById('nombre').addEventListener('input', validarForm);
+        document.getElementById('apellido').addEventListener('input', validarForm);
+        document.getElementById('telefono').addEventListener('input', validarForm);
+        document.getElementById('email').addEventListener('input', validarForm);
+        document.getElementById('password').addEventListener('input', validarForm);
+        document.getElementById('confirmPassword').addEventListener('input', validarForm);
+    
         // Muestra mensaje ERROR
         function msjError(inputId, errorMessage) {
             var feedbackElement = document.getElementById(inputId + 'Feedback');
             var inputElement = document.getElementById(inputId);
-
+            
             // Limpiar mensajes de error previos
             limpiarError(inputId);
-
+    
             errorMessage.split('\n').forEach(function(errorMsg) {
                 var errorElement = document.createElement('div');
                 errorElement.className = 'invalid-feedback';
                 errorElement.textContent = errorMsg;
                 inputElement.parentNode.insertBefore(errorElement, inputElement.nextSibling);
             });
-
+    
             // Marcar el input como inválido
             inputElement.classList.add('is-invalid');
+            return false;
         }
-
+    
         // Muestra mensaje CORRECTO
         function msjCorrecto(inputId) {
             var inputElement = document.getElementById(inputId);
             inputElement.classList.remove('is-invalid');
             inputElement.classList.add('is-valid');
+            return true;
         }
-
+    
         // Limpia mensajes de ERROR
         function limpiarError(inputId) {
             var inputElement = document.getElementById(inputId);
@@ -371,11 +356,12 @@
             errorMessages.forEach(function(errorElement) {
                 errorElement.parentNode.removeChild(errorElement);
             });
-
+    
             // Marcar el input como válido
             inputElement.classList.remove('is-invalid');
+            return true;
         }
-
+    
         // Validar RUT Chileno
         var Fn = {
             // Valida el rut con su cadena completa "XXXXXXXX-X"
@@ -400,191 +386,101 @@
             var rut = document.getElementById('rut').value;
             if (!rut.trim()) {
                 msjError('rut', 'Por favor, ingrese su RUT');
+                return false;
             } else if (!Fn.validaRut(rut)) {
                 msjError('rut', 'El RUT ingresado no es válido');
+                return false;
             } else {
                 limpiarError('rut');
-                msjCorrecto('rut');
+                return msjCorrecto('rut');
             }
-            }
-        
-
-
-
-
-
-        // Validar Nombre y Apellido
+        }
+    
+        // Validar nombre
         function validarNombre() {
             var nombre = document.getElementById('nombre').value;
-            var nombreRegex = /^[A-Za-záéíóúÁÉÍÓÚüÜñÑ]{1,16}$/;
-
             if (!nombre.trim()) {
                 msjError('nombre', 'Por favor, ingrese su nombre');
                 return false;
-            } else if (!nombreRegex.test(nombre)) {
-                msjError('nombre', 'El nombre no puede contener números, espacios ni caracteres especiales y debe tener entre 1 y 16 letras');
-                return false;
             } else {
                 limpiarError('nombre');
-                msjCorrecto('nombre');
-                return true;
+                return msjCorrecto('nombre');
             }
         }
-
+    
+        // Validar apellido
         function validarApellido() {
             var apellido = document.getElementById('apellido').value;
-            var apellidoRegex = /^[A-Za-záéíóúÁÉÍÓÚüÜñÑ]{1,16}$/;
-
             if (!apellido.trim()) {
                 msjError('apellido', 'Por favor, ingrese su apellido');
                 return false;
-            } else if (!apellidoRegex.test(apellido)) {
-                msjError('apellido', 'El apellido no puede contener números, espacios ni caracteres especiales y debe tener entre 1 y 16 letras');
-                return false;
             } else {
                 limpiarError('apellido');
-                msjCorrecto('apellido');
-                return true;
+                return msjCorrecto('apellido');
             }
         }
-
-
-
-        // Validar Telefono
+    
+        // Validar teléfono
         function validarTelefono() {
             var telefono = document.getElementById('telefono').value;
-            // Expresión regular para el formato de número de teléfono sin espacios
-            var telefonoRegex = /^9\d{8}$/;
-
             if (!telefono.trim()) {
-                msjError('telefono', 'Por favor, ingrese su número de teléfono');
+                msjError('telefono', 'Por favor, ingrese su teléfono');
                 return false;
-            } else if (!telefonoRegex.test(telefono)) {
-                msjError('telefono', 'El número de teléfono debe seguir el formato chileno, por ejemplo: 912345678');
+            } else if (!/^\d{9,10}$/.test(telefono)) {
+                msjError('telefono', 'El teléfono debe contener entre 9 y 10 dígitos');
                 return false;
             } else {
                 limpiarError('telefono');
-                msjCorrecto('telefono');
-                return true;
+                return msjCorrecto('telefono');
             }
         }
-
-
-
-
-
-        // Validar Correo
+    
+        // Validar correo electrónico
         function validarCorreo() {
             var correo = document.getElementById('email').value;
-            // Expresión regular para validar el formato básico del correo electrónico
-            var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
             if (!correo.trim()) {
                 msjError('email', 'Por favor, ingrese su correo electrónico');
                 return false;
-            } else if (!emailRegex.test(correo)) {
-                msjError('email', 'El correo electrónico ingresado no es válido');
+            } else if (!/\S+@\S+\.\S+/.test(correo)) {
+                msjError('email', 'El correo electrónico no es válido');
                 return false;
             } else {
                 limpiarError('email');
-                msjCorrecto('email');
-                return true;
+                return msjCorrecto('email');
             }
-        }
-
-
-
-        //Validar Contraseña
-        function validarContraseña() {
-            var contraseña = document.getElementById('password').value;
-            var errores = [];
-
-            // Al menos 1 letra mayúscula
-            if (!/[A-Z]/.test(contraseña)) {
-                errores.push('- La contraseña debe contener al menos 1 letra mayúscula');
-            } else {
-                limpiarError('password');
-                msjCorrecto('password');
-            }
-
-            // Al menos 1 número
-            if (!/[0-9]/.test(contraseña)) {
-                errores.push('- La contraseña debe contener al menos 1 número');
-            } else {
-                limpiarError('password');
-                msjCorrecto('password');
-            }
-
-            // Longitud mínima de 8 caracteres y máximo de 24 caracteres
-            if (contraseña.length < 8 || contraseña.length > 24) {
-                errores.push('- La contraseña debe tener entre 8 y 24 caracteres');
-            } else {
-                limpiarError('password');
-                msjCorrecto('password');
-            }
-
-            // Al menos 1 caracter especial (incluyendo ".")
-            if (!/[.!?@#$%^&*()-_+=]/.test(contraseña)) {
-                errores.push('- La contraseña debe contener al menos 1 caracter especial');
-            } else {
-                limpiarError('password');
-                msjCorrecto('password');
-            }
-
-            // Prohibir el uso de espacios
-            if (/\s/.test(contraseña)) {
-                errores.push('- La contraseña no puede contener espacios');
-            } else {
-                limpiarError('password');
-                msjCorrecto('password');
-            }
-
-            // Mostrar todos los errores encontrados
-            if (errores.length > 0) {
-                msjError('password', errores.join('\n')); // Cambio aquí
-            }
-        }
-
-
-
-
-        function validarConfirmarContraseña() {
-            var confContraseña = document.getElementById('confirmPassword').value;
-            var contraseña = document.getElementById('password').value;
-            
-
-            if (confContraseña != contraseña) {
-                msjError('confirmPassword','La contraseña no coincide');
-            } else {
-                limpiarError('confirmPassword');
-                msjCorrecto('confirmPassword');
-            }
-
-            if (!confContraseña.trim()) {
-                msjError('confirmPassword', 'No puedes dejar vacío');
-            } else {
-                limpiarError('nombre');
-                msjCorrecto('nombre');
-            }
-            
-        }
-
-
-
-        // Función para validar todo el formulario
-        function validarForm() {
-            validarRut();
-            validarNombre();
-            validarApellido()
-            validarFechaNacimiento();
-            validarTelefono();
-            validarCorreo();
-            validarContraseña();
-            validarConfirmarContraseña();
         }
     
-
-
+        // Validar contraseña
+        function validarContraseña() {
+            var contraseña = document.getElementById('password').value;
+            if (!contraseña.trim()) {
+                msjError('password', 'Por favor, ingrese su contraseña');
+                return false;
+            } else if (contraseña.length < 8) {
+                msjError('password', 'La contraseña debe tener al menos 8 caracteres');
+                return false;
+            } else {
+                limpiarError('password');
+                return msjCorrecto('password');
+            }
+        }
+    
+        // Validar confirmación de contraseña
+        function validarConfirmarContraseña() {
+            var contraseña = document.getElementById('password').value;
+            var confirmarContraseña = document.getElementById('confirmPassword').value;
+            if (!confirmarContraseña.trim()) {
+                msjError('confirmPassword', 'Por favor, confirme su contraseña');
+                return false;
+            } else if (contraseña !== confirmarContraseña) {
+                msjError('confirmPassword', 'Las contraseñas no coinciden');
+                return false;
+            } else {
+                limpiarError('confirmPassword');
+                return msjCorrecto('confirmPassword');
+            }
+        }
     </script>
+    
 </body>
 </html>

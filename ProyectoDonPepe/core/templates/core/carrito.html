@@ -195,18 +195,33 @@
     </div>
 
 
-
+    <script>
+        function eliminar_del_carrito(carrito_id) {
+            Swal.fire({
+                title: "¿Estás seguro que quieres eliminar el producto del carrito?",
+                text: "Esta acción no se puede deshacer!",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = "/eliminar_del_carrito/" + carrito_id + "/";
+                }
+            });
+        }
+    </script>
     {% if messages %}
-        {% for m in messages %}
-            <script>
-                    Swal.fire({
-                        title: "Exito!",
-                        text: "{{m}}",
-                        icon: "success",
-                        confirmButtonColor: "rgb(0, 123, 255)" 
-                    });
-            </script>
-        {% endfor %}
+    {% for message in messages %}
+    <script>
+        Swal.fire({
+            title: "{% if message.tags == 'success' %}¡Éxito!{% else %}Advertencia{% endif %}",
+            text: "{{ message }}",
+            icon: "{% if message.tags == 'success' %}success{% else %}warning{% endif %}",
+            confirmButtonColor: "rgb(0, 123, 255)"
+        });
+    </script>
+    {% endfor %}
     {% endif %}
 
     <div class="container-fluid">
@@ -254,8 +269,7 @@
                                 <span class="total">{{item.producto.precio|multiplicar:item.cantidad|format_clp}}</span>
                             </div>
                             <div style="margin-inline: 30px;">
-                                <a href="{% url 'eliminar_del_carrito' item.id %}"
-                                    class="btn btn-danger btn-sm">Eliminar</a>
+                                <a onclick="eliminar_del_carrito('{{ item.id }}')" class="btn btn-danger btn-sm">Eliminar</a>
                             </div>
                         </div>
                         {% endfor %}
