@@ -164,54 +164,71 @@
 
     
 
-    <!-- Ventana emergente del carrito -->
-    <div id="cartModal" class="modal fade" data-bs-backdrop="static">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Carrito de Compras</h5>
-                    <button type="button" class="btn-close" aria-label="Cerrar" data-bs-dismiss="modal"></button>
+<!-- Ventana emergente del carrito -->
+<div id="cartModal" class="modal fade" data-bs-backdrop="static" style="text-align: center;">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="width: 600px;">
+            <div class="modal-header">
+                <h5 class="modal-title">Carrito de Compras</h5>
+                <button type="button" class="btn-close" aria-label="Cerrar" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                {% for item in carrito %}
+                <div id="cart-item-{{ item.id }}" class="cart-item" data-id="{{ item.id }}"
+                    data-price="{{ item.producto.precio }}"
+                    style="display: flex; align-items: center; margin-block: 15px; border: 1px solid rgba(0, 0, 0, 0.250);">
+
+                    <img src="{{ item.producto.foto.url }}"
+                        style="margin-inline: 10px; max-width: 110px; height: 110px; object-fit: cover;">
+                    <div style="margin-inline: 10px; flex-grow: 1;">
+                        <strong>{{ item.producto.nombreP }}</strong>
+                    </div>
+                    <div style="margin-inline: 20px;">
+                        <span>{{ item.producto.precio | format_clp }}</span>
+                    </div>
+                    <div style="margin-inline: 20px; display: flex; align-items: center;">
+                        <form action="{% url 'aumentar_cantidad' item.producto.codProducto %}" method="post"
+                            style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-secondary btn-sm">+</button>
+                        </form>
+                        <p type="number" class="quantity" min="1"
+                            style="width: 50px; text-align: center; display: block; margin: 0 10px; border: 1px solid rgba(0, 0, 0, 0.200);"
+                            readonly>{{ item.cantidad }}</p>
+                        <form action="{% url 'disminuir_cantidad' item.producto.codProducto %}" method="post"
+                            style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-secondary btn-sm">-</button>
+                        </form>
+                    </div>
                 </div>
-                <div class="modal-body">
-                    <table class="table" style="border-color: rgba(0, 0, 0, 0);">
-                        <thead style="text-align: center;">
-                            <tr>
-                                <th>Producto</th>
-                                <th>Precio Unitario</th>
-                                <th>Cantidad</th>
-                                <th>Total</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody style="text-align: center;">
-                            {% for item in carrito %}
-                            <tr>
-                                <td>{{ item.producto.nombreP }}</td>
-                                <td>{{ item.producto.precio |format_clp }}</td>
-                                <td>{{ item.cantidad }}</td>
-                                <td>{{ item.producto.precio|multiplicar:item.cantidad|format_clp }}</td>
-                                <td>
-                                    <a href="{% url 'eliminar_del_carrito' item.id %}"
-                                        class="btn btn-danger btn-sm">Eliminar</a>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                            <tr>
-                                <td colspan="3" class="text-end" style="font-size: 20px; font-weight: 500;">Subtotal:
-                                </td>
-                                <td style="font-weight: 500;">{{ total |format_clp }}</td>
-                                <td></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                {% endfor %}
+                <div class="container">
+                    <div class="row" style="margin-top: 10px;">
+                        <div class="col-md-6" style="text-align: left; font-size: 20px; font-weight: 700;">
+                            <p>Total: </p>
+                        </div>
+                        <div class="col-md-6" style="text-align: right; font-size: 20px; font-weight: 700;">
+                            <p>{{ total | format_clp }}</p>
+                        </div>
+                    </div>
                 </div>
-                <div class="modal-footer">
-                    <a href="{% url 'carrito' %}" class="btn btn-success">Ver carrito</a>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+            <div class="modal-footer">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-6" style="text-align: left;">
+                            <a class="btn btn-success w-100" href="{% url 'carrito' %}" >Ver carrito</a>
+                        </div>
+                        <div class="col-md-6" style="text-align: right;">
+                            <button class="btn btn-secondary w-100" type="button"  data-bs-dismiss="modal">Cerrar</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
 
 
