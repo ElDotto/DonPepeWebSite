@@ -84,10 +84,6 @@ class Venta(models.Model):
     def __str__(self):
         return f"{self.codVenta}"
 
-
-
-
-
 class Categoria(models.Model):
     idCategoria = models.IntegerField(primary_key=True)
     nombreCa = models.CharField(max_length=50)
