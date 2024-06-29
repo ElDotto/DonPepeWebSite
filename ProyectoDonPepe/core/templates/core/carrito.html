@@ -377,71 +377,76 @@
                 </div>
             </form>
         
-            <!-- Formulario para despacho a domicilio -->
-            <form id="formDespachoDomicilio" method="post" action="{% url 'crear_venta' %}">
-                {% csrf_token %}
-                <div id="despachoDomicilio" style="display: none; text-align: left; margin-inline: 10px;">
-                    <h5>Despacho a domicilio</h5>
-                    <div class="hr">
-                        <hr>
-                    </div>
-        
-                    <div class="mb-3">
-                        <label for="region">Región:</label>
-                        <select class="form-select" id="region" name="region" onchange="validarFormulario()">
-                            <option value="">Selecciona una región</option>
-                            {% for region in regiones %}
-                            <option value="{{ region.idRegion }}" {% if region.idRegion == region_id %}selected{% endif %}>
-                                {{ region.nombreR }}
-                            </option>
-                            {% endfor %}
-                        </select>
-                    </div>
-        
-                    <div class="mb-3">
-                        <label for="comuna">Comuna:</label>
-                        <select class="form-select" id="comuna" name="comuna" onchange="validarFormulario()">
-                            <option value="">Primero selecciona una región</option>
-                            {% for comuna in comunas %}
-                            <option value="{{ comuna.idComuna }}">{{ comuna.nombreC }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-        
-                    <div class="mb-3">
-                        <label for="calle">Calle:</label>
-                        <input type="text" class="form-control" id="calle" name="calle" oninput="validarFormulario()">
-                    </div>
-        
-                    <div class="mb-3">
-                        <label for="numero">Número:</label>
-                        <input type="text" class="form-control" id="numero" name="numero" oninput="validarFormulario()">
-                    </div>
-        
-                    <input type="hidden" name="tipo_entrega" value="domicilio">
-                    <input type="hidden" name="total" value="{{ total }}">
-                    <input type="hidden" name="carrito" value="{{ carrito_count }}">
-        
-                    <div class="container">
-                        <div class="row">
-                            <div class="col-md-6" style="text-align: left; font-size: 20px; font-weight: 700;">
-                                <p>Total: </p>
-                            </div>
-                            <div class="col-md-6" style="text-align: right; font-size: 20px; font-weight: 700;">
-                                <p>{{ total | format_clp }}</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div style="text-align: center;">
-                        <button type="button" class="btn btn-warning" id="btnSiguienteDomicilio" style="width: 100%; font-weight: 700;" onclick="mostrarDetallesVenta()" disabled>Siguiente</button>
-                    </div>
-                </div>
-            </form>
+<!-- Formulario para despacho a domicilio -->
+<form id="formDespachoDomicilio" method="post" action="{% url 'crear_venta' %}">
+    {% csrf_token %}
+    <div id="despachoDomicilio" style="display: none; text-align: left; margin-inline: 10px;">
+        <h5>Despacho a domicilio</h5>
+        <div class="hr">
+            <hr>
+        </div>
+
+        <div class="mb-3">
+            <label for="region">Región:</label>
+            <select class="form-select" id="region" name="region" onchange="cargarComunas()">
+                <option value="">Selecciona una región</option>
+                {% for region in regiones %}
+                <option value="{{ region.idRegion }}" {% if region.idRegion == region_id %}selected{% endif %}>
+                    {{ region.nombreR }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="comuna">Comuna:</label>
+            <select class="form-select" id="comuna" name="comuna" onchange="actualizarCostoEnvio()">
+                <option value="">Primero selecciona una región</option>
+                <!-- Las opciones de comuna se cargarán dinámicamente -->
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="calle">Calle:</label>
+            <input type="text" class="form-control" id="calle" name="calle" oninput="validarFormulario()">
+        </div>
+
+        <div class="mb-3">
+            <label for="numero">Número:</label>
+            <input type="text" class="form-control" id="numero" name="numero" oninput="validarFormulario()">
+        </div>
+
+        <div class="mb-3">
+            <label for="metodoDespacho">Método de Despacho:</label>
+            <select class="form-select" id="metodoDespacho" name="metodo_despacho" onchange="actualizarCostoEnvio()">
+                <option value="">Selecciona un método de despacho</option>
+                <option value="correos_de_chile">Correos de Chile</option>
+                <option value="starken">Starken</option>
+                <option value="chilexpress">Chilexpress</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="costoEnvio">Costo de Envío:</label>
+            <span id="costoEnvio">0</span>
+        </div>
+
+        <div class="mb-3">
+            <label>Total con Envío:</label>
+            <span id="totalConEnvio">{{ total | format_clp }}</span>
+        </div>
+
+        <input type="hidden" name="tipo_entrega" value="domicilio">
+        <input type="hidden" name="total" id="totalInput" value="{{ total }}">
+        <input type="hidden" name="carrito" value="{{ carrito_count }}">
+
+        <div style="text-align: center;">
+            <button type="button" class="btn btn-warning" id="btnSiguienteDomicilio" style="width: 100%; font-weight: 700;" onclick="mostrarDetallesVenta()" disabled>Siguiente</button>
         </div>
     </div>
-</div>
+</form>
 
-<!--DETALLE DE LA VENTA-->
+<!-- Modal para detalles de la venta -->
 <div class="modal fade" id="detallesVentaModal" tabindex="-1" aria-labelledby="detallesVentaModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -450,14 +455,16 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <p id="detallesVentaContent"></p>
+                <div id="detallesVentaContent">
+                    <!-- Aquí se mostrarán los detalles dinámicos de la venta -->
+                </div>
                 <div class="container">
                     <div class="row">
                         <div class="col-md-6">
                             <button type="button" class="btn btn-danger w-100" data-bs-dismiss="modal">Cancelar</button>
                         </div>
                         <div class="col-md-6">
-                            <button type="button" class="btn btn-success w-100" onclick="confirmarCompra()">Confirmar compra</button>
+                            <button type="button" class="btn btn-success w-100" onclick="mostrarMetodosPago()">Seleccionar método de pago</button>
                         </div>
                     </div>
                 </div>
@@ -465,6 +472,32 @@
         </div>
     </div>
 </div>
+
+<!-- Modal para selección de método de pago -->
+<div class="modal fade" id="metodosPagoModal" tabindex="-1" aria-labelledby="metodosPagoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="metodosPagoModalLabel">Selecciona método de pago</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <button type="button" class="btn btn-primary w-100" onclick="simularPago('webpay')">Pagar con WebPay</button>
+                        </div>
+                        <div class="col-md-6">
+                            <button type="button" class="btn btn-primary w-100" onclick="simularPago('paypal')">Pagar con PayPal</button>
+                        </div>
+                    </div>
+                </div>
+            </div>            
+        </div>
+    </div>
+</div>
+
+
 
 
 
@@ -533,86 +566,122 @@
         validarFormulario();
     }
 
+    function actualizarCostoEnvio() {
+        var metodoDespacho = document.getElementById("metodoDespacho").value;
+        var costoEnvio = 0;
+    
+        switch (metodoDespacho) {
+            case "correos_de_chile":
+                // Rango de costo para Correos de Chile: 5000 a 17000 pesos
+                costoEnvio = Math.floor(Math.random() * (17000 - 5000 + 1)) + 5000;
+                break;
+            case "starken":
+                // Rango de costo para Starken: 9000 a 32000 pesos
+                costoEnvio = Math.floor(Math.random() * (32000 - 9000 + 1)) + 9000;
+                break;
+            case "chilexpress":
+                // Rango de costo para Chilexpress: 15000 a 20000 pesos
+                costoEnvio = Math.floor(Math.random() * (20000 - 15000 + 1)) + 15000;
+                break;
+            default:
+                costoEnvio = 0; // Si no se selecciona método de despacho, costo cero
+                break;
+        }
+    
+        // Mostrar el costo de envío actualizado en el formulario
+        document.getElementById("costoEnvio").innerText = costoEnvio.toLocaleString('es-CL', { style: 'currency', currency: 'CLP' });
+    
+        // Actualizar el total sumando el costo de envío
+        var total = parseFloat(document.getElementById("totalInput").value);
+        var totalConEnvio = total + costoEnvio;
+    
+        // Mostrar el total actualizado en el formulario
+        document.getElementById("totalConEnvio").innerText = totalConEnvio.toLocaleString('es-CL', { style: 'currency', currency: 'CLP' });
+    
+        // Habilitar el botón de siguiente si hay un método de despacho seleccionado
+        var btnSiguiente = document.getElementById("btnSiguienteDomicilio");
+        btnSiguiente.disabled = metodoDespacho === "";
+    }
+    
     function validarFormulario() {
         const region = document.getElementById('region').value;
         const comuna = document.getElementById('comuna').value;
         const calle = document.getElementById('calle').value;
         const numero = document.getElementById('numero').value;
-
+    
         const btnSiguienteDomicilio = document.getElementById('btnSiguienteDomicilio');
-
+    
         if (region && comuna && calle && numero) {
             btnSiguienteDomicilio.disabled = false;
         } else {
             btnSiguienteDomicilio.disabled = true;
         }
     }
-
+    
     function mostrarDetallesVenta() {
         let detallesVentaContent = '';
+        let totalConEnvio = 0;
+    
         if (document.querySelector('.btn-despacho-domicilio').classList.contains('active')) {
+            const region = document.getElementById('region').selectedOptions[0].text;
+            const comuna = document.getElementById('comuna').selectedOptions[0].text;
+            const calle = document.getElementById('calle').value;
+            const numero = document.getElementById('numero').value;
+            const metodoDespacho = document.getElementById('metodoDespacho').value;
+            const costoEnvio = parseFloat(document.getElementById('costoEnvio').innerText.replace(/\D/g, ''));
+    
+            totalConEnvio = parseFloat(document.getElementById("totalInput").value) + costoEnvio;
+    
             detallesVentaContent = `
-                    <div class="container">
-                        <div class="row">
-                            <div class="col-md-6" style="text-align: left; font-size: 15px;">
-                                <p><strong>Tipo de entrega:</strong></p>
-                                <p><strong>Región:</strong></p>
-                                <p><strong>Comuna:</strong></p>
-                                <p><strong>Calle:</strong></p>
-                                <p><strong>Número:</strong></p>
-                            </div>
-                            <div class="col-md-6" style="text-align: left; font-size: 15px;">
-                                <p>Despacho a domicilio</p>
-                                <p>${document.getElementById('region').selectedOptions[0].text}</p>
-                                <p>${document.getElementById('comuna').selectedOptions[0].text}</p>
-                                <p>${document.getElementById('calle').value}</p>
-                                <p>${document.getElementById('numero').value}</p>
-                            </div>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-6" style="text-align: left; font-size: 15px;">
+                            <p><strong>Tipo de entrega:</strong> Despacho a domicilio</p>
+                            <p><strong>Región:</strong> ${region}</p>
+                            <p><strong>Comuna:</strong> ${comuna}</p>
+                            <p><strong>Calle:</strong> ${calle}</p>
+                            <p><strong>Número:</strong> ${numero}</p>
+                            <p><strong>Método de Despacho:</strong> ${metodoDespacho}</p>
+                            <p><strong>Costo de Envío:</strong> ${costoEnvio.toLocaleString('es-CL', { style: 'currency', currency: 'CLP' })}</p>
+                        </div>
+                        <div class="col-md-6" style="text-align: left; font-size: 15px;">
+                            <p><strong>Total a comprar:</strong> ${totalConEnvio.toLocaleString('es-CL', { style: 'currency', currency: 'CLP' })}</p>
                         </div>
                     </div>
+                </div>
             `;
         } else {
+            totalConEnvio = parseFloat(document.getElementById("totalInput").value);
+    
             detallesVentaContent = `
-                    <div class="container">
-                        <div class="row">
-                            <div class="col-md-6" style="text-align: left; font-size: 15px;">
-                                <p><strong>Tipo de entrega:</strong></p>
-                                <p><strong>Comuna:</strong></p>
-                                <p><strong>Dirección:</strong></p>
-                            </div>
-                            <div class="col-md-6" style="text-align: left; font-size: 15px;">
-                                <p>Retiro en tienda</p>
-                                <p>Temuco</p>
-                                <p>Zenteno 524</p>
-                            </div>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-6" style="text-align: left; font-size: 15px;">
+                            <p><strong>Tipo de entrega:</strong> Retiro en tienda</p>
+                            <p><strong>Comuna:</strong> Temuco</p>
+                            <p><strong>Dirección:</strong> Zenteno 524</p>
+                        </div>
+                        <div class="col-md-6" style="text-align: left; font-size: 15px;">
+                            <p><strong>Total a comprar:</strong> ${totalConEnvio.toLocaleString('es-CL', { style: 'currency', currency: 'CLP' })}</p>
                         </div>
                     </div>
+                </div>
             `;
         }
-
+    
         detallesVentaContent += `
-                    <div class="hr">
-                        <hr>
-                    </div>
-                    <div class="container">
-                        <div class="row">
-                            <div class="col-md-6" style="text-align: left; font-size: 20px; font-weight: 700;">
-                                <p>Total a comprar: </p>
-                            </div>
-                            <div class="col-md-6" style="text-align: right; font-size: 20px; font-weight: 700;">
-                                <p>{{ total | format_clp }}</p>
-                            </div>
-                        </div>
-                    </div>
+            <div class="hr">
+                <hr>
+            </div>
         `;
-
+    
         document.getElementById('detallesVentaContent').innerHTML = detallesVentaContent;
-
+    
         // Mostrar modal
         var detallesVentaModal = new bootstrap.Modal(document.getElementById('detallesVentaModal'), {});
         detallesVentaModal.show();
     }
-
+    
     function confirmarCompra() {
         Swal.fire({
             title: "¿Estás seguro de que quieres confirmar la compra?",
@@ -630,6 +699,95 @@
             }
         });
     }
+
+    // Función para mostrar el modal de selección de método de pago
+    function mostrarMetodosPago() {
+        // Mostrar modal de selección de método de pago
+        var metodosPagoModal = new bootstrap.Modal(document.getElementById('metodosPagoModal'), {});
+        metodosPagoModal.show();
+    }
+
+    // Función para simular el pago según el método seleccionado
+    function simularPago(metodo) {
+        var detallesVentaModal = new bootstrap.Modal(document.getElementById('detallesVentaModal'), {});
+        detallesVentaModal.hide(); // Ocultar modal de detalles de venta
+
+        switch (metodo) {
+            case "webpay":
+                simularPagoWebPay();
+                break;
+            case "paypal":
+                simularPagoPayPal();
+                break;
+            default:
+                break;
+        }
+    }
+
+    // Función para simular el pago con WebPay
+    function simularPagoWebPay() {
+        // Aquí debes implementar la lógica para obtener los datos de la transacción y enviarlos a WebPay
+        // Suponiendo que tienes una URL de prueba para WebPay (reemplaza con la URL real obtenida de Transbank)
+        var urlPagoWebPay = 'https://webpay.transbank.cl/';
+
+        // Abrir una nueva ventana para el pago
+        var ventanaPago = window.open(urlPagoWebPay, '_blank');
+
+        // Detectar cuando se cierre la ventana de pago
+        ventanaPago.onunload = function() {
+            // Actualizar los detalles de la venta y agregar botón de descarga de boleta
+            mostrarDetallesVentaConBoleta();
+        };
+    }
+
+    // Función para mostrar detalles de la venta con opción de descargar boleta en PDF
+    function mostrarDetallesVentaConBoleta() {
+        mostrarDetallesVenta(); // Mostrar detalles de la venta como lo hacías antes
+
+        // Agregar el botón de descarga de boleta en PDF
+        var detallesVentaContent = document.getElementById('detallesVentaContent');
+        var botonDescargarBoleta = document.createElement('button');
+        botonDescargarBoleta.textContent = 'Descargar Boleta';
+        botonDescargarBoleta.classList.add('btn', 'btn-primary', 'mt-3');
+        botonDescargarBoleta.onclick = function() {
+            // Lógica para descargar la boleta en PDF
+            descargarBoletaPDF();
+        };
+        detallesVentaContent.appendChild(botonDescargarBoleta);
+    }
+
+    // Función para descargar la boleta en formato PDF (simulada)
+    function descargarBoletaPDF() {
+        // Aquí debes implementar la lógica para descargar la boleta en formato PDF
+        // Por ejemplo, podrías abrir una nueva ventana con una ruta que genere el PDF y lo descargue automáticamente
+        var urlGeneracionPDF = 'http://127.0.0.1:8000/carrito/';
+
+        // Abrir una nueva ventana para descargar el PDF
+        window.open(urlGeneracionPDF, '_blank');
+    }
+
+    // Función para simular el pago con PayPal
+    function simularPagoPayPal() {
+        // Suponiendo que tienes una URL de prueba para PayPal (reemplaza con la URL real obtenida de PayPal)
+        var urlPagoPayPal = 'https://paypal.me/DOHANLOID?country.x=CL&locale.x=es_XC';
+
+        // Abrir una nueva ventana para el pago
+        var ventanaPago2 = window.open(urlPagoPayPal, '_blank');
+
+        // Detectar cuando se cierre la ventana de pago
+        ventanaPago2.onunload = function() {
+            // Actualizar los detalles de la venta y agregar botón de descarga de boleta
+            mostrarDetallesVentaConBoleta();
+        };
+    }
+    
+
+    // Llamar a las funciones al cargar la página para establecer un valor inicial si es necesario
+    window.onload = function () {
+        actualizarCostoEnvio();
+        validarFormulario();
+    };
+
 </script>
 
 

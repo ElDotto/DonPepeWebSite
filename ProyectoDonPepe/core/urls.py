@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import inicio, register, productos, quienessomos, galeria, login_user, cerrarsesion, editarperfil, actualizarperfil, administrador, agregar, ingresarproducto, listaproducto, listausuarios, borrarperfil, borrarproducto, editarproducto, actualizaproducto, detalleproducto, exportar_productos_excel, buscar_productos, carrito, agregar_al_carrito, eliminar_del_carrito, aumentar_cantidad, disminuir_cantidad, comunas_por_region, crear_venta, listaventas, detalles_venta, cambiar_estado_venta
+from .views import inicio, register, productos, quienessomos, galeria, login_user, cerrarsesion, editarperfil, actualizarperfil, administrador, agregar, ingresarproducto, listaproducto, listausuarios, borrarperfil, borrarproducto, editarproducto, actualizaproducto, detalleproducto, exportar_productos_excel, buscar_productos, carrito, agregar_al_carrito, eliminar_del_carrito, aumentar_cantidad, disminuir_cantidad, comunas_por_region, crear_venta, listaventas, detalles_venta, cambiar_estado_venta, add_review
 
 urlpatterns = [
     path('', inicio, name="inicio"),
@@ -33,4 +33,6 @@ urlpatterns = [
     path('crear_venta/', crear_venta, name='crear_venta'),
     path('detalles_venta/', detalles_venta, name='detalles_venta'),
     path('cambiar_estado_venta/', cambiar_estado_venta, name='cambiar_estado_venta'),
+    path('add_review/', add_review, name='add_review'),
+    
 ] 
