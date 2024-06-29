@@ -238,7 +238,36 @@
           <span class="visually-hidden">Next</span>
         </button>
       </div>
-    
+    <!-- Formulario de reseñas -->
+<div class="container mt-5">
+    <h3>Deja tu Reseña</h3>
+    <form method="post" action="{% url 'add_review' %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Enviar Reseña</button>
+    </form>
+</div>
+
+<!-- Mostrar reseñas -->
+<div class="container mt-5">
+    <h3>Reseñas</h3>
+    <div class="row row-cols-1 row-cols-md-2 g-4">
+        {% for review in reviews %}
+        <div class="col">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">{{ review.user.username }}</h5>
+                    <h6 class="card-subtitle mb-1 text-muted">{{ review.date_posted }}</h6>
+                    <p class="card-text">{{ review.comment }}</p>
+                    <p class="card-text">Rating: {{ review.rating }} estrellas</p>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p>No hay reseñas disponibles.</p>
+        {% endfor %}
+    </div>
+</div>
 
    <!-- Sección de información de ubicación y contacto -->
    <div class="container-fluid py-5" style="background-color: #fdfde3; color: #e4ab00;">

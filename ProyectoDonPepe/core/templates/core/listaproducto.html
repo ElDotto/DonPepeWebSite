@@ -131,7 +131,7 @@
             /* Mantiene la proporción de la imagen y recorta para ajustarse al tamaño especificado */
         }
     </style>
-
+    
     <script>
         function eliminar_producto(id_producto) {
             Swal.fire({
@@ -160,6 +160,7 @@
         </script>
         {% endfor %}
         {% endif %}
+
 
 
     
@@ -361,7 +362,27 @@
             });
         });
         </script>
-    
-    
+        
+        {% if productos_bajo_stock %}
+<script>
+    $(document).ready(function() {
+        var lowStockProducts = [];
+        {% for producto in productos_bajo_stock %}
+            lowStockProducts.push("{{ producto.nombreP }} (ID: {{ producto.codProducto }})");
+        {% endfor %}
+        console.log(lowStockProducts);  // Imprime los productos de bajo stock en la consola
+        if (lowStockProducts.length > 0) {
+            var message = "Productos con stock bajo:\n" + lowStockProducts.join("\n");
+            Swal.fire({
+                title: 'Advertencia',
+                text: message,
+                icon: 'warning',
+                confirmButtonText: 'Aceptar'
+            });
+        }
+    });
+</script>
+{% endif %}
+
 </body>
 </html>

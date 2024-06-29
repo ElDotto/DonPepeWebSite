@@ -4,13 +4,14 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
-from .models import Direccion, Estado, ItemCarrito, ProductoCarrito, TipoDespacho, Usuario, Producto, Venta, Categoria, DetalleVenta, Rol, Region, Comuna
+from .models import Direccion, Estado, ItemCarrito, ProductoCarrito, TipoDespacho, Usuario, Producto, Venta, Categoria, DetalleVenta, Rol, Region, Comuna, Review
 import openpyxl
 from openpyxl.styles import Alignment, Font, Border, Side, PatternFill
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.http import require_POST
 from django.db.models import Sum
 from django.shortcuts import render
+from .forms import ReviewForm
 # Create your views here.
 
 def inicio(request):
@@ -22,11 +23,12 @@ def inicio(request):
         carrito = ItemCarrito.objects.filter(usuario=request.user)
         total = sum(item.producto.precio * item.cantidad for item in carrito)
         carrito_count = sum(item.cantidad for item in carrito)
-    
+    reviews = Review.objects.all().order_by('-date_posted')
     contexto = {
         'carrito': carrito,
         'total': total,
         'carrito_count': carrito_count,
+        'reviews': reviews
     }
     
     return render(request, 'core/inicio.html', contexto)
@@ -179,18 +181,26 @@ def ingresarproducto(request):
 
 def listaproducto(request):
     productoListado = Producto.objects.all()
-    categorias= Categoria.objects.all()
+    categorias = Categoria.objects.all()
+
+    # Anotamos la cantidad total vendida para cada producto
     productos_vendidos = DetalleVenta.objects.values('producto_id').annotate(total_vendido=Sum('cantidad')).order_by('-total_vendido')
 
+    # Agregamos la cantidad vendida a cada producto
     for producto in productoListado:
         producto.cantidad_vendida = 0
         for pv in productos_vendidos:
             if pv['producto_id'] == producto.codProducto:
                 producto.cantidad_vendida = pv['total_vendido']
                 break
+
+    # Filtramos los productos con stock menor a 15
+    productos_bajo_stock = productoListado.filter(stock__lt=15)
+    
     contexto = {
         "categorias": categorias,
-        "productos": productoListado
+        "productos": productoListado,
+        'productos_bajo_stock': productos_bajo_stock
     }   
     return render(request, 'core/listaproducto.html', contexto)
 
@@ -615,5 +625,17 @@ def cambiar_estado_venta(request):
             return JsonResponse({'error': 'Venta no encontrada'}, status=404)
 
     return JsonResponse({'error': 'Método no permitido'}, status=405)
+
+def add_review(request):
+    if request.method == 'POST':
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            review = form.save(commit=False)
+            review.user = request.user
+            review.save()
+            return redirect('inicio')
+    else:
+        form = ReviewForm()
+    return render(request, 'core/add_review.html', {'form': form})
 
 
