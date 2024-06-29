@@ -326,10 +326,20 @@ def listausuarios(request):
     }
     return render(request, 'core/listausuarios.html', contexto)
 
-def borrarperfil(request, rut):
-    perfilborrar = Usuario.objects.get(rut = rut)
-    perfilborrar.delete()
-    messages.success(request, 'Perfil eliminado correctamente.')
+def borrarperfil(request, correo):
+    try:
+        # Eliminar el usuario de Django por su username (en este caso, asumiendo que el username es igual al correo)
+        user = User.objects.get(username=correo)
+        user.delete()
+
+        # Eliminar el usuario de la tabla Usuario
+        perfilborrar = Usuario.objects.get(correo=correo)
+        perfilborrar.delete()
+
+        messages.success(request, 'Perfil eliminado correctamente.')
+    except User.DoesNotExist:
+        messages.error(request, 'El usuario no existe en la base de datos.')
+
     return redirect('listausuarios')
 
 @login_required
@@ -448,7 +458,7 @@ def carrito(request):
     comunas = []
     if region_id:
         try:
-            region_seleccionada = Region.objects.get(idRegion=region_id)  # Ajuste aquí
+            region_seleccionada = Region.objects.get(idRegion=region_id)
             comunas = Comuna.objects.filter(region=region_seleccionada)
         except Region.DoesNotExist:
             pass
@@ -459,9 +469,10 @@ def carrito(request):
         'carrito_count': carrito_count,
         'regiones': regiones,
         'comunas': comunas,
-        'region_id': region_id,  # Esto es para mantener la región seleccionada en el formulario
+        'region_id': region_id,
     }
     return render(request, 'core/carrito.html', context)
+
 
 def comunas_por_region(request, region_id):
     try:
@@ -501,6 +512,7 @@ def crear_venta(request):
             nueva_venta = Venta(usuario=usuario, estadoP=estado, tipodespacho=tipo_despacho, total=total, direccion=nueva_direccion)
             
             nueva_venta.save()
+            messages.success(request, 'Compra realizada correctamente!.')
 
             # Crear detalles de venta para cada producto en el carrito
             carrito_items = ItemCarrito.objects.filter(usuario=request.user)
@@ -528,6 +540,9 @@ def crear_venta(request):
             estado = Estado.objects.get(id_estado = 1)
             nueva_venta = Venta(usuario=usuario, estadoP=estado, tipodespacho=tipo_despacho, total=total, direccion=nueva_direccion)
             nueva_venta.save()
+            messages.success(request, 'Compra realizada correctamente!.')
+            
+
 
             # Crear detalles de venta para cada producto en el carrito
             carrito_items = ItemCarrito.objects.filter(usuario=request.user)

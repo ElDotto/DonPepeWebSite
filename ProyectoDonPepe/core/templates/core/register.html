@@ -133,57 +133,6 @@
     </style>
 
 
-    <!-- Ventana emergente del carrito -->
-    <div id="cartModal" class="modal fade" data-bs-backdrop="static">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Carrito de Compras</h5>
-                    <button type="button" class="btn-close" aria-label="Cerrar" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <table class="table" style="border-color: rgba(0, 0, 0, 0);">
-                        <thead style="text-align: center;">
-                            <tr>
-                                <th>Producto</th>
-                                <th>Precio Unitario</th>
-                                <th>Cantidad</th>
-                                <th>Total</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody style="text-align: center;">
-                            {% for item in carrito %}
-                            <tr>
-                                <td>{{ item.producto.nombreP }}</td>
-                                <td>{{ item.producto.precio |format_clp }}</td>
-                                <td>{{ item.cantidad }}</td>
-                                <td>{{ item.producto.precio|multiplicar:item.cantidad|format_clp }}</td>
-                                <td>
-                                    <a href="{% url 'eliminar_del_carrito' item.id %}"
-                                        class="btn btn-danger btn-sm">Eliminar</a>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                            <tr>
-                                <td colspan="3" class="text-end" style="font-size: 20px; font-weight: 500;">Subtotal:
-                                </td>
-                                <td style="font-weight: 500;">{{ total |format_clp }}</td>
-                                <td></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="modal-footer">
-                    <a href="{% url 'carrito' %}" class="btn btn-success">Ver carrito</a>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-
     {% if messages %}
     {% for message in messages %}
     <script>
