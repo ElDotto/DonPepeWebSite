@@ -383,8 +383,8 @@ def productos(request):
     }    
     return render(request, 'core/productos.html', contexto)
 
-def quienessomos(request):
-    return render(request, 'core/quienessomos.html')
+def terminos(request):
+    return render(request, 'core/terminos.html')
 
 def galeria(request):
     return render(request, 'core/galeria.html')

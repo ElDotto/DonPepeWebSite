@@ -36,17 +36,12 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="btn btn-outline-warning py-4 px-4 mx-2" href="{% url 'quienessomos' %}">
-                            Quienes Somos
+                        <a class="btn btn-outline-warning py-4 px-4 mx-2" href="{% url 'terminos' %}">
+                            Terminos y Condiciones
                             <i class="bi bi-question-circle-fill"></i>
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="btn btn-outline-warning py-4 px-4 mx-2" href="{% url 'galeria' %}">
-                            Galería
-                            <i class="bi bi-image"></i>
-                        </a>
-                    </li>
+                   
                     <li class="nav-item dropdown">
                         <!-- Botón dropdown para Registro/Login o Perfil dependiendo de la autenticación -->
                         {% if user.is_authenticated %}
