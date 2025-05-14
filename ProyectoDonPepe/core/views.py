@@ -10,8 +10,11 @@ from openpyxl.styles import Alignment, Font, Border, Side, PatternFill
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.http import require_POST
 from django.db.models import Sum
-from django.shortcuts import render
 from .forms import ReviewForm
+import paypalrestsdk
+from core import paypal_config  # Esto activa la configuración
+from django.http import JsonResponse
+
 # Create your views here.
 
 def inicio(request):
@@ -638,4 +641,94 @@ def add_review(request):
         form = ReviewForm()
     return render(request, 'core/add_review.html', {'form': form})
 
+def crear_pago(request):
+    if request.method == 'POST':
+        tipo_entrega = request.POST.get('tipo_entrega')
+        total = request.POST.get('total')
 
+        # Guarda en sesión para usar después del pago
+        request.session['tipo_entrega'] = tipo_entrega
+        request.session['total'] = total
+        request.session['calle'] = request.POST.get('calle')
+        request.session['numero'] = request.POST.get('numero')
+        request.session['comuna'] = request.POST.get('comuna')
+
+        # Convertir de CLP a USD (asumiendo valor fijo: 1 USD = 900 CLP aprox.)
+        clp = int(total)
+        usd = round(clp / 900, 2)
+
+        pago = paypalrestsdk.Payment({
+            "intent": "sale",
+            "payer": {"payment_method": "paypal"},
+            "redirect_urls": {
+                "return_url": request.build_absolute_uri('/pago/ejecutar/'),
+                "cancel_url": request.build_absolute_uri('/pago/cancelado/')
+            },
+            "transactions": [{
+                "amount": {
+                    "total": f"{usd:.2f}",
+                    "currency": "USD"
+                },
+                "description": "Compra en Ferremas"
+            }]
+        })
+
+        if pago.create():
+            for link in pago.links:
+                if link.rel == "approval_url":
+                    return redirect(link.href)
+        return JsonResponse({"error": str(pago.error)})
+    
+def ejecutar_pago(request):
+    payment_id = request.GET.get('paymentId')
+    payer_id = request.GET.get('PayerID')
+
+    pago = paypalrestsdk.Payment.find(payment_id)
+
+    if pago.execute({"payer_id": payer_id}):
+        user = request.user
+        usuario = Usuario.objects.get(correo=user.username)
+        tipo_entrega = request.session.get('tipo_entrega')
+        total = request.session.get('total')
+
+        if tipo_entrega == 'tienda':
+            calle = 'San Oscar'
+            numero = 125
+            comuna = Comuna.objects.get(idComuna=2)
+        else:
+            calle = request.session.get('calle')
+            numero = request.session.get('numero')
+            comuna = Comuna.objects.get(idComuna=request.session.get('comuna'))
+
+        direccion = Direccion(calle=calle, numero=numero, comuna=comuna)
+        direccion.save()
+
+        tipo_despacho = TipoDespacho.objects.get(nombreDespacho='Tienda' if tipo_entrega == 'tienda' else 'Domicilio')
+        estado = Estado.objects.get(id_estado=1)
+
+        nueva_venta = Venta(usuario=usuario, estadoP=estado, tipodespacho=tipo_despacho, total=total, direccion=direccion)
+        nueva_venta.save()
+
+        carrito_items = ItemCarrito.objects.filter(usuario=user)
+        for item in carrito_items:
+            DetalleVenta.objects.create(
+                venta=nueva_venta,
+                producto=item.producto,
+                cantidad=item.cantidad,
+                subtotal=item.producto.precio * item.cantidad
+            )
+
+        carrito_items.delete()
+
+        # Limpia la sesión
+        for key in ['tipo_entrega', 'total', 'calle', 'numero', 'comuna']:
+            request.session.pop(key, None)
+
+        messages.success(request, 'Pago y compra realizados correctamente.')
+        return redirect('carrito')
+    else:
+        messages.error(request, 'Error en el pago: ' + str(pago.error))
+        return redirect('error_page')  # Rediriges a una página de error o a la misma página de pago
+    
+def error_pago(request):
+    return render(request, 'error_pago.html', {'mensaje': 'El pago no pudo ser procesado'})    

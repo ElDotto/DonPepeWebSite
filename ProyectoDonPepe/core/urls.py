@@ -1,5 +1,6 @@
+from django.http import JsonResponse
 from django.urls import path
-from .views import inicio, register, productos, terminos, galeria, login_user, cerrarsesion, editarperfil, actualizarperfil, administrador, agregar, ingresarproducto, listaproducto, listausuarios, borrarperfil, borrarproducto, editarproducto, actualizaproducto, detalleproducto, exportar_productos_excel, buscar_productos, carrito, agregar_al_carrito, eliminar_del_carrito, aumentar_cantidad, disminuir_cantidad, comunas_por_region, crear_venta, listaventas, detalles_venta, cambiar_estado_venta, add_review
+from .views import inicio, register, productos, terminos, galeria, login_user, cerrarsesion, editarperfil, actualizarperfil, administrador, agregar, ingresarproducto, listaproducto, listausuarios, borrarperfil, borrarproducto, editarproducto, actualizaproducto, detalleproducto, exportar_productos_excel, buscar_productos, carrito, agregar_al_carrito, eliminar_del_carrito, aumentar_cantidad, disminuir_cantidad, comunas_por_region, crear_venta, listaventas, detalles_venta, cambiar_estado_venta, add_review, crear_pago, ejecutar_pago, error_pago
 
 urlpatterns = [
     path('', inicio, name="inicio"),
@@ -34,5 +35,8 @@ urlpatterns = [
     path('detalles_venta/', detalles_venta, name='detalles_venta'),
     path('cambiar_estado_venta/', cambiar_estado_venta, name='cambiar_estado_venta'),
     path('add_review/', add_review, name='add_review'),
-    
+    path('pago/crear/', crear_pago, name='crear_pago'),
+    path('pago/ejecutar/', ejecutar_pago, name='ejecutar_pago'),
+    path('pago/cancelado/', lambda request: JsonResponse({'status': 'Pago cancelado'}), name='pago_cancelado'),
+    path('error_pago/', error_pago, name='error_page'),
 ] 

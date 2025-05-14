@@ -493,12 +493,6 @@
 </div>
 
 
-
-
-
-
-
-
 <!-- Scripts de Bootstrap y Font Awesome -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
@@ -761,20 +755,36 @@
         window.open(urlGeneracionPDF, '_blank');
     }
 
-    // Función para simular el pago con PayPal
     function simularPagoPayPal() {
-        // Suponiendo que tienes una URL de prueba para PayPal (reemplaza con la URL real obtenida de PayPal)
-        var urlPagoPayPal = 'https://paypal.me/DOHANLOID?country.x=CL&locale.x=es_XC';
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = '/pago/crear/'; // URL de Django que crea el pago
 
-        // Abrir una nueva ventana para el pago
-        var ventanaPago2 = window.open(urlPagoPayPal, '_blank');
+    // Añadir el token CSRF
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    const csrfInput = document.createElement('input');
+    csrfInput.type = 'hidden';
+    csrfInput.name = 'csrfmiddlewaretoken';
+    csrfInput.value = csrfToken;
+    form.appendChild(csrfInput);
 
-        // Detectar cuando se cierre la ventana de pago
-        ventanaPago2.onunload = function() {
-            // Actualizar los detalles de la venta y agregar botón de descarga de boleta
-            mostrarDetallesVentaConBoleta();
-        };
+    // Obtener valores del formulario actual
+    const tipoEntrega = document.querySelector('.btn-despacho-domicilio.active') ? 'domicilio' : 'tienda';
+    form.innerHTML += `<input type="hidden" name="tipo_entrega" value="${tipoEntrega}">`;
+
+    if (tipoEntrega === 'domicilio') {
+        form.innerHTML += `<input type="hidden" name="comuna" value="${document.getElementById('comuna').value}">`;
+        form.innerHTML += `<input type="hidden" name="calle" value="${document.getElementById('calle').value}">`;
+        form.innerHTML += `<input type="hidden" name="numero" value="${document.getElementById('numero').value}">`;
+        form.innerHTML += `<input type="hidden" name="total" value="${parseFloat(document.getElementById("totalInput").value) + parseFloat(document.getElementById("costoEnvio").innerText.replace(/\D/g, ''))}">`;
+    } else {
+        form.innerHTML += `<input type="hidden" name="total" value="${document.getElementById("totalInput").value}">`;
     }
+
+    document.body.appendChild(form);
+    form.submit();
+}
+
     
 
     // Llamar a las funciones al cargar la página para establecer un valor inicial si es necesario
