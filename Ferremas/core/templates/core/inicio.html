@@ -312,5 +312,63 @@
         showSlide();
 
       </script>
+      <div id="weather" style="padding: 10px; background:rgb(255, 255, 255); margin-top: 20px;">
+  <h3>Clima actual:</h3>
+  <p id="weather-data">Cargando clima...</p>
+</div>
+
+<script>
+  const apiKey = "4c39dc18cdb736f01bc457b29bb78439"; // Reemplaza con tu API key de OpenWeatherMap
+
+  function getWeather(lat, lon) {
+    fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric&lang=es`)
+      .then(response => response.json())
+      .then(data => {
+        const weatherText = `Ubicación: ${data.name}, ${data.sys.country} |
+        Temperatura: ${data.main.temp}°C |
+        Estado: ${data.weather[0].description}`;
+        document.getElementById("weather-data").innerText = weatherText;
+      })
+      .catch(error => {
+        document.getElementById("weather-data").innerText = "No se pudo obtener el clima.";
+        console.error(error);
+      });
+  }
+
+  function getLocationAndWeather() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        position => getWeather(position.coords.latitude, position.coords.longitude),
+        error => {
+          document.getElementById("weather-data").innerText = "No se pudo obtener tu ubicación.";
+        }
+      );
+    } else {
+      document.getElementById("weather-data").innerText = "Geolocalización no soportada por este navegador.";
+    }
+  }
+
+  window.onload = getLocationAndWeather;
+</script>
+<!-- INICIO GEOLOCALIZACIÓN IP -->
+<div id="ip-location" style="padding: 10px; background:rgb(255, 255, 255); margin-top: 10px;">
+  <h3>Tu ubicación aproximada:</h3>
+  <p id="location-data">Detectando ubicación por IP...</p>
+</div>
+
+<script>
+  fetch("https://ipapi.co/json/")
+    .then(response => response.json())
+    .then(data => {
+      const locationText = `Estás visitando desde: ${data.city}, ${data.region}, ${data.country_name}`;
+      document.getElementById("location-data").innerText = locationText;
+    })
+    .catch(error => {
+      document.getElementById("location-data").innerText = "No se pudo detectar tu ubicación por IP.";
+      console.error(error);
+    });
+</script>
+<!-- FIN GEOLOCALIZACIÓN IP -->
+
 </body>
 </html>
