@@ -215,7 +215,8 @@
                                 </div>
                                 <div class="mb-3">
                                     <label for="stock" class="form-label">Stock Disponible:</label>
-                                    <input value="{{producto.stock}}" type="number" class="form-control" id="stock" name="stock" required>
+                                    <input value="{{ producto.stock }}" type="number" class="form-control" id="stock" name="stock" readonly disabled>
+
                                 </div>
                                 <div class="mb-3">
                                     <label for="descripcion" class="form-label">Descripción:</label>

@@ -266,11 +266,15 @@
                             </div>
                             <div
                                 style="margin-left: 20px; display: flex; align-items: center; justify-content: center;">
-                                <form action="{% url 'aumentar_cantidad' item.producto.codProducto %}" method="post"
-                                    style="display: inline;">
-                                    {% csrf_token %}
-                                    <button type="submit" class="btn btn-secondary btn-sm">+</button>
-                                </form>
+                                {% if item.cantidad >= item.producto.stock %}
+                                    <button type="button" class="btn btn-secondary btn-sm" disabled>+</button>
+                                {% else %}
+                                    <form action="{% url 'aumentar_cantidad' item.producto.codProducto %}" method="post" style="display: inline;">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-secondary btn-sm">+</button>
+                                    </form>
+                                {% endif %}
+
                                 <p type="number" class="quantity" min="1"
                                     style="width: 50px; text-align: center; display: block; margin: 0 auto; border: 1px solid rgba(0, 0, 0, 0.200);"
                                     readonly>{{ item.cantidad }}</p>

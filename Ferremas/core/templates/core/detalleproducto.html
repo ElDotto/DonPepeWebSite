@@ -290,23 +290,35 @@
             contenido.classList.toggle('show');
         }
     </script>
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            var quantityInput = document.getElementById('quantity');
-            var increaseQtyBtn = document.getElementById('increaseQty');
-            var reduceQtyBtn = document.getElementById('reduceQty');
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var quantityInput = document.getElementById('quantity');
+        var increaseQtyBtn = document.getElementById('increaseQty');
+        var reduceQtyBtn = document.getElementById('reduceQty');
+        var maxStock = {{ producto.stock }};
 
-            increaseQtyBtn.addEventListener('click', function () {
-                quantityInput.stepUp();
-            });
-
-            reduceQtyBtn.addEventListener('click', function () {
-                if (parseInt(quantityInput.value) > 1) {
-                    quantityInput.stepDown();
-                }
-            });
+        increaseQtyBtn.addEventListener("click", function () {
+            let currentValue = parseInt(quantityInput.value);
+            if (currentValue < maxStock) {
+                quantityInput.value = currentValue + 1;
+            } else {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Stock insuficiente',
+                    text: `Solo quedan ${maxStock} unidades.`,
+                });
+            }
         });
-    </script>
+
+        reduceQtyBtn.addEventListener("click", function () {
+            let currentValue = parseInt(quantityInput.value);
+            if (currentValue > 1) {
+                quantityInput.value = currentValue - 1;
+            }
+        });
+    });
+</script>
+
 
 
     <script>

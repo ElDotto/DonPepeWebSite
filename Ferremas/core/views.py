@@ -303,7 +303,6 @@ def actualizaproducto(request):
     if request.method == "POST":
         idProducto = request.POST['id']
         nombreProducto = request.POST['nombre']
-        stockProducto = request.POST['stock']
         descripcion = request.POST['descripcion']
         precio = request.POST['precio']
         categoria = request.POST['categoria']
@@ -312,7 +311,6 @@ def actualizaproducto(request):
         categoriaP = Categoria.objects.get(idCategoria=categoria)
 
         producto.nombreP = nombreProducto
-        producto.stock = stockProducto
         producto.descipcion = descripcion
         producto.precio = precio
         producto.categoria = categoriaP
@@ -411,35 +409,40 @@ def detalleproducto(request, pk):
 @login_required
 def agregar_al_carrito(request, producto_cod):
     producto = get_object_or_404(Producto, codProducto=producto_cod)
-    
-    if request.method == 'POST':
-        cantidad = int(request.POST.get('cantidad', 1))  # Obtener la cantidad del formulario, por defecto 1 si no se proporciona
 
-        # Obtener o crear el ítem en el carrito
+    if request.method == 'POST':
+        cantidad = int(request.POST.get('cantidad', 1))
         carrito, created = ItemCarrito.objects.get_or_create(usuario=request.user, producto=producto)
 
-        if created:
-            carrito.cantidad = cantidad  # Establecer la cantidad seleccionada
-        else:
-            carrito.cantidad += cantidad  # Sumar la cantidad seleccionada
+        total_cantidad = cantidad if created else carrito.cantidad + cantidad
 
+        if total_cantidad > producto.stock:
+            messages.warning(request, f'Solo quedan {producto.stock} unidades en stock.')
+            return redirect('detalleproducto', pk=producto.pk)
+
+        carrito.cantidad = total_cantidad
         carrito.save()
         messages.success(request, 'Producto añadido al carrito correctamente.')
 
     return redirect('detalleproducto', pk=producto.pk)
 
+
 @login_required
 def aumentar_cantidad(request, producto_cod):
     producto = get_object_or_404(Producto, codProducto=producto_cod)
-    
+
     if request.method == 'POST':
         carrito, created = ItemCarrito.objects.get_or_create(usuario=request.user, producto=producto)
-        carrito.cantidad += 1
-        carrito.save()
-        messages.success(request, 'Cantidad aumentada correctamente.')
-    
-    # Redireccionar a la misma página o a donde corresponda después del aumento
-    return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
+
+        if carrito.cantidad + 1 > producto.stock:
+            messages.warning(request, f'No puedes agregar más. Stock disponible: {producto.stock}.')
+        else:
+            carrito.cantidad += 1
+            carrito.save()
+            messages.success(request, 'Cantidad aumentada correctamente.')
+
+    return redirect(request.META.get('HTTP_REFERER', 'carrito'))
+
 
 @login_required
 def disminuir_cantidad(request, producto_cod):
@@ -514,8 +517,8 @@ def crear_venta(request):
 
         if tipo_entrega == 'tienda':
 
-            calle = 'Zenteno'
-            numero = 524
+            calle = 'San Oscar'
+            numero = 125
             comuna = Comuna.objects.get(idComuna= 2)
 
             nueva_direccion = Direccion(calle=calle, numero=numero, comuna=comuna)
@@ -530,8 +533,26 @@ def crear_venta(request):
             # Crear detalles de venta para cada producto en el carrito
             carrito_items = ItemCarrito.objects.filter(usuario=request.user)
             for item in carrito_items:
-                detalle_venta = DetalleVenta(venta=nueva_venta, producto=item.producto, cantidad=item.cantidad, subtotal=item.producto.precio * item.cantidad)
+                producto = item.producto
+
+                # Validar stock antes de continuar
+                if item.cantidad > producto.stock:
+                    messages.error(request, f'El producto "{producto.nombreP}" no tiene suficiente stock disponible.')
+                    return redirect('carrito')
+
+                # Descontar el stock
+                producto.stock -= item.cantidad
+                producto.save()
+
+                # Registrar la venta
+                detalle_venta = DetalleVenta(
+                    venta=nueva_venta,
+                    producto=producto,
+                    cantidad=item.cantidad,
+                    subtotal=producto.precio * item.cantidad
+                )
                 detalle_venta.save()
+
 
             # Limpiar el carrito después de completar la venta
             carrito_items.delete()
@@ -560,8 +581,26 @@ def crear_venta(request):
             # Crear detalles de venta para cada producto en el carrito
             carrito_items = ItemCarrito.objects.filter(usuario=request.user)
             for item in carrito_items:
-                detalle_venta = DetalleVenta(venta=nueva_venta, producto=item.producto, cantidad=item.cantidad, subtotal=item.producto.precio * item.cantidad)
+                producto = item.producto
+
+                # Validar stock antes de continuar
+                if item.cantidad > producto.stock:
+                    messages.error(request, f'El producto "{producto.nombreP}" no tiene suficiente stock disponible.')
+                    return redirect('carrito')
+
+                # Descontar el stock
+                producto.stock -= item.cantidad
+                producto.save()
+
+                # Registrar la venta
+                detalle_venta = DetalleVenta(
+                    venta=nueva_venta,
+                    producto=producto,
+                    cantidad=item.cantidad,
+                    subtotal=producto.precio * item.cantidad
+                )
                 detalle_venta.save()
+
 
             # Limpiar el carrito después de completar la venta
             carrito_items.delete()
@@ -711,12 +750,22 @@ def ejecutar_pago(request):
 
         carrito_items = ItemCarrito.objects.filter(usuario=user)
         for item in carrito_items:
+            producto = item.producto
+
+            if item.cantidad > producto.stock:
+                messages.error(request, f'El producto "{producto.nombreP}" no tiene suficiente stock disponible.')
+                return redirect('carrito')
+
+            producto.stock -= item.cantidad
+            producto.save()
+
             DetalleVenta.objects.create(
                 venta=nueva_venta,
-                producto=item.producto,
+                producto=producto,
                 cantidad=item.cantidad,
-                subtotal=item.producto.precio * item.cantidad
+                subtotal=producto.precio * item.cantidad
             )
+
 
         carrito_items.delete()
 
